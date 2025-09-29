@@ -437,26 +437,68 @@ const currentYear = new Date().getFullYear();
 				}
 
 				footer {
-					display: flex;
-					flex-direction: column;
-					gap: 12px;
 					margin-top: clamp(56px, 8vw, 104px);
-					padding-top: 32px;
+					padding-top: clamp(24px, 3vw, 32px);
 					border-top: 1px solid var(--border);
 					color: var(--text-soft);
 					font-size: 14px;
 					transition: color var(--transition-snappy), border-color var(--transition-snappy);
 				}
 
-				footer a {
+				.footer__top {
+					display: flex;
+					justify-content: space-between;
+					align-items: flex-start;
+					gap: clamp(24px, 4vw, 48px);
+					margin-bottom: clamp(20px, 3vw, 28px);
+				}
+
+				.footer__info {
+					display: flex;
+					flex-direction: column;
+					gap: 12px;
+					flex: 1;
+				}
+
+				.footer__copyright,
+				.footer__services {
+					line-height: 1.5;
+				}
+
+				.footer__contact {
 					color: var(--text-soft);
+					text-decoration: none;
+					font-weight: 600;
+					transition: color 220ms ease;
+					margin-top: 8px;
+				}
+
+				.footer__contact:hover,
+				.footer__contact:focus-visible {
+					color: var(--accent);
+				}
+
+				.footer__bottom {
+					padding-top: clamp(16px, 2vw, 20px);
+					border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+				}
+
+				.footer__attribution {
+					font-size: 13px;
+					opacity: 0.8;
+					line-height: 1.4;
+				}
+
+				.footer__attribution a {
+					color: inherit;
 					text-decoration: none;
 					transition: color 220ms ease;
 				}
 
-				footer a:hover,
-				footer a:focus-visible {
+				.footer__attribution a:hover,
+				.footer__attribution a:focus-visible {
 					color: var(--accent);
+					opacity: 1;
 				}
 
 				.fab {
@@ -561,14 +603,18 @@ const currentYear = new Date().getFullYear();
 						align-items: flex-start;
 					}
 
-					.top-bar__actions {
-						width: 100%;
-						justify-content: space-between;
-					}
-
 					.call-now {
 						width: 100%;
 						justify-content: center;
+					}
+
+					.footer__top {
+						flex-direction: column;
+						gap: 20px;
+					}
+
+					.theme-toggle {
+						align-self: flex-end;
 					}
 				}
 
@@ -598,6 +644,14 @@ const currentYear = new Date().getFullYear();
 						width: calc(100% - 48px);
 						text-align: center;
 					}
+
+					.footer__top {
+						gap: 16px;
+					}
+
+					.theme-toggle {
+						align-self: center;
+					}
 				}
 			</style>
 	</head>
@@ -608,23 +662,9 @@ const currentYear = new Date().getFullYear();
 					<strong class="logo__name">Tropini Service</strong>
 					<span class="logo__subtitle">di Tropini Gianfranco · Centro assistenza accreditato</span>
 				</div>
-				<div class="top-bar__actions">
-					<button
-						class="theme-toggle"
-						type="button"
-						aria-pressed="true"
-						aria-label="Passa alla modalità chiara"
-						data-theme-toggle
-						data-state="dark"
-					>
-						<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
-						<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"></span>
-						<span class="theme-toggle__thumb" aria-hidden="true"></span>
-					</button>
-					<a class="call-now" href="tel:+393342968625" aria-label="Chiama ora Tropini Service al numero 334 296 8625">
-						Chiama ora · 334 296 8625
-					</a>
-				</div>
+				<a class="call-now" href="tel:+393342968625" aria-label="Chiama ora Tropini Service al numero 334 296 8625">
+					Chiama ora · 334 296 8625
+				</a>
 			</div>
 		</header>
 		<main>
@@ -729,10 +769,28 @@ const currentYear = new Date().getFullYear();
 				</section>
 
 				<footer>
-					<span>© {currentYear} Tropini Service di Tropini Gianfranco · P.IVA disponibile su richiesta.</span>
-					<span>Centro assistenza accreditato Clam &amp; Nordica Extraflame · Operativi in Piemonte e Nord-Ovest.</span>
-					<a href="tel:+393342968625">Parla ora con un tecnico</a>
-					<span>Powered by <a href="https://bitora.it" target="_blank" rel="noopener">bitora.it</a> · un prodotto di Denis Cazzulo.</span>
+					<div class="footer__top">
+						<div class="footer__info">
+							<span class="footer__copyright">© {currentYear} Tropini Service di Tropini Gianfranco · P.IVA disponibile su richiesta.</span>
+							<span class="footer__services">Centro assistenza accreditato Clam &amp; Nordica Extraflame · Operativi in Piemonte e Nord-Ovest.</span>
+							<a class="footer__contact" href="tel:+393342968625">Parla ora con un tecnico</a>
+						</div>
+						<button
+							class="theme-toggle"
+							type="button"
+							aria-pressed="true"
+							aria-label="Passa alla modalità chiara"
+							data-theme-toggle
+							data-state="dark"
+						>
+							<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
+							<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"></span>
+							<span class="theme-toggle__thumb" aria-hidden="true"></span>
+						</button>
+					</div>
+					<div class="footer__bottom">
+						<span class="footer__attribution">Powered by <a href="https://bitora.it" target="_blank" rel="noopener">bitora.it</a> · un prodotto di Denis Cazzulo.</span>
+					</div>
 				</footer>
 			</div>
 		</main>
