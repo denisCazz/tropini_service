@@ -1,16 +1,811 @@
 ---
-
+const currentYear = new Date().getFullYear();
 ---
 
-<html lang="en">
+<html lang="it" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+		/>
+		<title>Tropini Service · Assistenza stufe in Piemonte</title>
+		<meta
+			name="description"
+			content="Tropini Service di Tropini Gianfranco · Centro assistenza accreditato per stufe e camini Clam e Nordica Extraflame in tutto il Piemonte. Installazione, manutenzione e supporto rapido anche nelle regioni limitrofe."
+		/>
+		<script>
+			const themeStorageKey = "theme-preference";
+			const themeMediaQuery = "(prefers-color-scheme: dark)";
+			// @ts-ignore - gestisce un parametro tipizzato in ambiente JavaScript inline
+			function applyTheme(theme) {
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
+			}
+			let storedTheme = null;
+			try {
+				storedTheme = window.localStorage.getItem(themeStorageKey);
+			} catch (error) {
+				storedTheme = null;
+			}
+			const prefersDark = window.matchMedia(themeMediaQuery).matches;
+			const initialTheme = storedTheme ?? (prefersDark ? "dark" : "light");
+			applyTheme(initialTheme);
+			// @ts-ignore - proprietà custom per condividere le impostazioni del tema
+			window.__theme = { storageKey: themeStorageKey, preferDarkQuery: themeMediaQuery, applyTheme };
+		</script>
+		<style>
+				:root {
+					--radius-lg: 32px;
+					--radius-md: 20px;
+					--transition-snappy: 220ms ease;
+					font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+					color-scheme: dark;
+				}
+
+				:root,
+				:root[data-theme="dark"] {
+					--bg-base: #0f0f12;
+					--bg-elevated: #18181f;
+					--bg-glass: rgba(24, 24, 31, 0.82);
+					--accent: #ff414d;
+					--accent-soft: rgba(255, 65, 77, 0.14);
+					--text-strong: #f5f6f8;
+					--text-soft: #c7cad4;
+					--border: rgba(255, 255, 255, 0.08);
+					--topbar-background: rgba(15, 15, 18, 0.92);
+					--card-gradient-secondary: rgba(15, 15, 18, 0.72);
+					--body-gradient: radial-gradient(circle at top left, rgba(255, 65, 77, 0.2), transparent 45%),
+						radial-gradient(circle at 80% 18%, rgba(148, 163, 184, 0.12), transparent 55%),
+						linear-gradient(160deg, #121217 0%, #0f0f12 55%, #09090c 100%);
+					--accent-shadow: 0 18px 36px rgba(255, 65, 77, 0.35);
+					--fab-shadow: 0 18px 36px rgba(255, 65, 77, 0.35);
+					--inner-shadow: 0 32px 90px rgba(0, 0, 0, 0.45);
+					--cta-banner-background: linear-gradient(150deg, rgba(255, 65, 77, 0.16), rgba(24, 24, 31, 0.68));
+					--cta-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
+					--tag-bg: rgba(148, 163, 184, 0.12);
+					--tag-border: rgba(148, 163, 184, 0.28);
+					color-scheme: dark;
+				}
+
+				:root[data-theme="light"] {
+					--bg-base: #f7f8fc;
+					--bg-elevated: #ffffff;
+					--bg-glass: rgba(255, 255, 255, 0.82);
+					--accent: #ff414d;
+					--accent-soft: rgba(255, 65, 77, 0.12);
+					--text-strong: #11131a;
+					--text-soft: #4e5668;
+					--border: rgba(18, 24, 38, 0.12);
+					--topbar-background: rgba(255, 255, 255, 0.88);
+					--card-gradient-secondary: rgba(241, 243, 248, 0.94);
+					--body-gradient: radial-gradient(circle at 8% 6%, rgba(255, 161, 168, 0.24), transparent 45%),
+						radial-gradient(circle at 82% 14%, rgba(148, 163, 184, 0.2), transparent 55%),
+						linear-gradient(160deg, #f8f9fd 0%, #edf0f7 52%, #e4e8f2 100%);
+					--accent-shadow: 0 18px 32px rgba(255, 65, 77, 0.24);
+					--fab-shadow: 0 18px 32px rgba(255, 65, 77, 0.2);
+					--inner-shadow: 0 32px 80px rgba(15, 23, 42, 0.12);
+					--cta-banner-background: linear-gradient(150deg, rgba(255, 65, 77, 0.14), rgba(255, 255, 255, 0.9));
+					--cta-shadow: 0 24px 52px rgba(15, 23, 42, 0.12);
+					--tag-bg: rgba(148, 163, 184, 0.16);
+					--tag-border: rgba(148, 163, 184, 0.32);
+					color-scheme: light;
+				}
+
+				*,
+				*::before,
+				*::after {
+					box-sizing: border-box;
+				}
+
+				body {
+					margin: 0;
+					min-height: 100vh;
+					background: var(--body-gradient);
+					background-color: var(--bg-base);
+					color: var(--text-strong);
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					scroll-behavior: smooth;
+					transition: background 260ms ease, color 260ms ease;
+				}
+
+				.top-bar {
+					position: sticky;
+					top: 0;
+					width: 100%;
+					z-index: 1000;
+					background: var(--topbar-background);
+					backdrop-filter: blur(18px);
+					border-bottom: 1px solid var(--border);
+					transition: background var(--transition-snappy), border-color var(--transition-snappy);
+				}
+
+				.top-bar__content {
+					width: min(1120px, 92vw);
+					margin: 0 auto;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 24px;
+					padding: clamp(18px, 3vw, 26px) 0;
+				}
+
+				.top-bar__actions {
+					display: flex;
+					align-items: center;
+					gap: 18px;
+				}
+
+				.logo {
+					display: grid;
+					gap: 6px;
+					transition: color var(--transition-snappy);
+				}
+
+				.logo__name {
+					font-size: clamp(32px, 5vw, 42px);
+					font-weight: 700;
+					letter-spacing: 0.04em;
+					text-transform: uppercase;
+				}
+
+				.logo__subtitle {
+					font-size: clamp(14px, 2vw, 16px);
+					letter-spacing: 0.2em;
+					text-transform: uppercase;
+					color: var(--text-soft);
+				}
+
+				.call-now {
+					display: inline-flex;
+					align-items: center;
+					gap: 10px;
+					padding: 14px 28px;
+					border-radius: 999px;
+					background: var(--accent);
+					color: #fff;
+					font-weight: 700;
+					letter-spacing: 0.05em;
+					text-decoration: none;
+					border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+					box-shadow: var(--accent-shadow);
+					transition: transform 200ms ease, background 200ms ease;
+				}
+
+				.call-now:hover,
+				.call-now:focus-visible {
+					transform: translateY(-2px);
+					background: color-mix(in srgb, var(--accent) 88%, #ffffff 12%);
+				}
+
+				main {
+					width: min(1120px, 92vw);
+					padding: clamp(140px, 16vw, 180px) 0 120px;
+					position: relative;
+				}
+
+				.inner {
+					background: color-mix(in srgb, var(--bg-glass) 82%, transparent);
+					border: 1px solid var(--border);
+					border-radius: 36px;
+					padding: clamp(32px, 4vw, 56px);
+					box-shadow: var(--inner-shadow);
+					backdrop-filter: blur(16px);
+					transition: background var(--transition-snappy), border-color var(--transition-snappy), box-shadow var(--transition-snappy);
+				}
+
+				.hero {
+					display: grid;
+					gap: clamp(24px, 4vw, 48px);
+					margin-bottom: clamp(48px, 8vw, 88px);
+				}
+
+				.eyebrow {
+					margin: 0;
+					font-size: 14px;
+					letter-spacing: 0.42em;
+					text-transform: uppercase;
+					color: var(--accent);
+					font-weight: 600;
+				}
+
+				.hero h1 {
+					margin: 0;
+					font-size: clamp(40px, 6.5vw, 74px);
+					line-height: 1.05;
+				}
+
+				.hero p {
+					margin: 0;
+					max-width: 60ch;
+					font-size: clamp(18px, 2.3vw, 22px);
+					color: var(--text-soft);
+					line-height: 1.6;
+				}
+
+				.cta-group {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 16px;
+				}
+
+				.cta {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					gap: 8px;
+					padding: 14px 26px;
+					border-radius: 999px;
+					text-decoration: none;
+					font-weight: 600;
+					letter-spacing: 0.04em;
+					transition: transform 200ms ease, background 200ms ease, border-color 200ms ease, color 200ms ease;
+				}
+
+				.cta--primary {
+					background: var(--accent);
+					color: #fff;
+					border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+					box-shadow: var(--accent-shadow);
+				}
+
+				.cta--primary:hover,
+				.cta--primary:focus-visible {
+					transform: translateY(-2px);
+					background: color-mix(in srgb, var(--accent) 85%, #ffffff 15%);
+				}
+
+				.cta--ghost {
+					background: transparent;
+					color: var(--text-soft);
+					border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+				}
+
+				.cta--ghost:hover,
+				.cta--ghost:focus-visible {
+					color: var(--text-strong);
+					border-color: var(--accent);
+					transform: translateY(-2px);
+				}
+
+				.hero .badges {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 12px;
+				}
+
+				.badge {
+					padding: 10px 18px;
+					border-radius: 999px;
+					background: var(--accent-soft);
+					border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+					font-size: 14px;
+					letter-spacing: 0.08em;
+					text-transform: uppercase;
+					color: color-mix(in srgb, var(--accent) 70%, var(--text-strong));
+				}
+
+				section {
+					margin-bottom: clamp(56px, 7vw, 96px);
+				}
+
+				section:last-of-type {
+					margin-bottom: 0;
+				}
+
+				.section-title {
+					font-size: clamp(24px, 3vw, 32px);
+					margin-bottom: 16px;
+				}
+
+				.section-text {
+					color: var(--text-soft);
+					font-size: 18px;
+					line-height: 1.7;
+					margin: 0;
+				}
+
+				.grid {
+					display: grid;
+					gap: 28px;
+					grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				}
+
+				.card {
+					background: linear-gradient(160deg, var(--bg-elevated), var(--card-gradient-secondary));
+					border: 1px solid var(--border);
+					border-radius: var(--radius-md);
+					padding: 24px;
+					display: grid;
+					gap: 12px;
+					transition: transform 220ms ease, border-color 220ms ease;
+				}
+
+				.card:hover,
+				.card:focus-within {
+					transform: translateY(-4px);
+					border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+				}
+
+				.card strong {
+					font-size: 18px;
+				}
+
+				.card p {
+					margin: 0;
+					color: var(--text-soft);
+					line-height: 1.6;
+				}
+
+				.cta-banner {
+					display: flex;
+					flex-wrap: wrap;
+					align-items: center;
+					justify-content: space-between;
+					gap: clamp(18px, 4vw, 28px);
+					padding: clamp(28px, 4vw, 42px);
+					border-radius: var(--radius-lg);
+					background: var(--cta-banner-background);
+					border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+					box-shadow: var(--cta-shadow);
+					transition: background var(--transition-snappy), border-color var(--transition-snappy), box-shadow var(--transition-snappy);
+				}
+
+				.cta-banner__content {
+					display: grid;
+					gap: 12px;
+					max-width: 520px;
+				}
+
+				.cta-banner__content h2 {
+					margin: 0;
+					font-size: clamp(26px, 3.5vw, 34px);
+				}
+
+				.cta-banner__content p {
+					margin: 0;
+					color: var(--text-soft);
+					line-height: 1.6;
+				}
+
+				.cta-banner__actions {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 16px;
+				}
+
+				.address {
+					display: grid;
+					gap: 12px;
+					color: var(--text-soft);
+					font-style: normal;
+				}
+
+				.address strong {
+					color: var(--text-strong);
+					font-size: 18px;
+				}
+
+				.address a {
+					color: inherit;
+					text-decoration: none;
+					transition: color 200ms ease;
+				}
+
+				.address a:hover,
+				.address a:focus-visible {
+					color: var(--accent);
+				}
+
+				.hours {
+					display: grid;
+					gap: 8px;
+					margin-top: 24px;
+				}
+
+				.hours span {
+					color: var(--text-soft);
+					font-size: 16px;
+				}
+
+				.contact-note {
+					margin-top: 24px;
+				}
+
+				.tag-cloud {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 10px;
+					margin-top: 24px;
+				}
+
+				.tag {
+					font-size: 13px;
+					padding: 8px 16px;
+					border-radius: 999px;
+					background: var(--tag-bg);
+					border: 1px solid var(--tag-border);
+					letter-spacing: 0.05em;
+					text-transform: uppercase;
+				}
+
+				footer {
+					display: flex;
+					flex-direction: column;
+					gap: 12px;
+					margin-top: clamp(56px, 8vw, 104px);
+					padding-top: 32px;
+					border-top: 1px solid var(--border);
+					color: var(--text-soft);
+					font-size: 14px;
+					transition: color var(--transition-snappy), border-color var(--transition-snappy);
+				}
+
+				footer a {
+					color: var(--text-soft);
+					text-decoration: none;
+					transition: color 220ms ease;
+				}
+
+				footer a:hover,
+				footer a:focus-visible {
+					color: var(--accent);
+				}
+
+				.fab {
+					position: fixed;
+					bottom: clamp(24px, 4vw, 36px);
+					right: clamp(24px, 4vw, 36px);
+					padding: 16px 24px;
+					border-radius: 999px;
+					background: var(--accent);
+					color: #fff;
+					font-weight: 700;
+					text-decoration: none;
+					box-shadow: var(--fab-shadow);
+					letter-spacing: 0.05em;
+					transition: transform 220ms ease;
+				}
+
+				.fab:hover,
+				.fab:focus-visible {
+					transform: translateY(-3px);
+				}
+
+				.theme-toggle {
+					position: relative;
+					display: inline-flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 6px;
+					width: 58px;
+					height: 30px;
+					padding: 0 11px;
+					border-radius: 999px;
+					border: 1px solid var(--border);
+					background: color-mix(in srgb, var(--bg-elevated) 86%, transparent);
+					cursor: pointer;
+					transition: background var(--transition-snappy), border-color var(--transition-snappy), box-shadow var(--transition-snappy);
+				}
+
+				.theme-toggle:hover,
+				.theme-toggle:focus-visible {
+					border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+					box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
+					outline: none;
+				}
+
+				.theme-toggle__icon {
+					font-size: 14px;
+					line-height: 1;
+					color: var(--text-soft);
+					transition: opacity var(--transition-snappy), color var(--transition-snappy);
+				}
+
+				.theme-toggle__icon--sun::before {
+					content: "☀";
+				}
+
+				.theme-toggle__icon--moon::before {
+					content: "☾";
+				}
+
+				.theme-toggle__thumb {
+					position: absolute;
+					top: 3px;
+					left: 3px;
+					width: 24px;
+					height: 24px;
+					border-radius: 999px;
+					background: var(--accent);
+					transition: transform var(--transition-snappy), background var(--transition-snappy);
+					box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+				}
+
+				.theme-toggle[data-state="light"] .theme-toggle__thumb {
+					transform: translateX(0);
+				}
+
+				.theme-toggle[data-state="dark"] .theme-toggle__thumb {
+					transform: translateX(28px);
+				}
+
+				.theme-toggle[data-state="dark"] .theme-toggle__icon--moon {
+					opacity: 1;
+					color: var(--text-strong);
+				}
+
+				.theme-toggle[data-state="dark"] .theme-toggle__icon--sun {
+					opacity: 0.55;
+				}
+
+				.theme-toggle[data-state="light"] .theme-toggle__icon--sun {
+					opacity: 1;
+					color: var(--text-strong);
+				}
+
+				.theme-toggle[data-state="light"] .theme-toggle__icon--moon {
+					opacity: 0.55;
+				}
+
+				@media (max-width: 900px) {
+					.top-bar__content {
+						flex-direction: column;
+						align-items: flex-start;
+					}
+
+					.top-bar__actions {
+						width: 100%;
+						justify-content: space-between;
+					}
+
+					.call-now {
+						width: 100%;
+						justify-content: center;
+					}
+				}
+
+				@media (max-width: 720px) {
+					main {
+						padding: 120px 0 92px;
+					}
+
+					.cta {
+						width: 100%;
+					}
+
+					.cta-banner {
+						flex-direction: column;
+						align-items: flex-start;
+					}
+
+					.cta-banner__actions {
+						width: 100%;
+					}
+
+					.cta-banner__actions .cta {
+						width: 100%;
+					}
+
+					.fab {
+						width: calc(100% - 48px);
+						text-align: center;
+					}
+				}
+			</style>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<header class="top-bar">
+			<div class="top-bar__content">
+				<div class="logo">
+					<strong class="logo__name">Tropini Service</strong>
+					<span class="logo__subtitle">di Tropini Gianfranco · Centro assistenza accreditato</span>
+				</div>
+				<div class="top-bar__actions">
+					<button
+						class="theme-toggle"
+						type="button"
+						aria-pressed="true"
+						aria-label="Passa alla modalità chiara"
+						data-theme-toggle
+						data-state="dark"
+					>
+						<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
+						<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"></span>
+						<span class="theme-toggle__thumb" aria-hidden="true"></span>
+					</button>
+					<a class="call-now" href="tel:+393342968625" aria-label="Chiama ora Tropini Service al numero 334 296 8625">
+						Chiama ora · 334 296 8625
+					</a>
+				</div>
+			</div>
+		</header>
+		<main>
+			<div class="inner">
+				<header class="hero">
+					<p class="eyebrow">Centro assistenza stufe certificato</p>
+					<h1>Assistenza certificata per stufe e camini in tutto il Piemonte</h1>
+					<p>
+						Tropini Service di Tropini Gianfranco è operativo su tutto il territorio piemontese — dalle Langhe alla provincia di Torino e oltre — con tecnici qualificati per installazione, manutenzione e riparazione di stufe Clam e Nordica Extraflame. Offriamo interventi rapidi, manutenzione programmata e ricambi originali anche nelle regioni limitrofe.
+					</p>
+					<div class="badges">
+						<span class="badge">Piemonte on-site</span>
+						<span class="badge">Clam</span>
+						<span class="badge">Nordica Extraflame</span>
+						<span class="badge">Installazione &amp; manutenzione</span>
+					</div>
+				</header>
+
+				<section id="chi-siamo">
+					<h2 class="section-title">Chi siamo</h2>
+					<p class="section-text">
+						Con base a Cavallermaggiore e una rete di intervento mobile, Tropini Service raggiunge abitazioni, aziende e strutture ricettive in tutto il Piemonte e, su richiesta, nel Nord-Ovest. Pianifichiamo controlli completi, manutenzione programmata e supporto post-installazione con tecnici certificati e ricambi originali.
+					</p>
+				</section>
+
+				<section id="servizi">
+					<h2 class="section-title">Cosa facciamo</h2>
+					<div class="grid">
+						<article class="card">
+							<strong>Assistenza stufe e camini Clam</strong>
+							<p>
+								Diagnosi rapida dei guasti, sostituzione componenti originali e ripristino prestazioni per stufe a pellet, a legna e termocamini Clam in tutta la regione.
+							</p>
+						</article>
+						<article class="card">
+							<strong>Servizio Nordica Extraflame</strong>
+							<p>
+								Assistenza autorizzata, installazione certificata e manutenzione programmata per la gamma Nordica Extraflame con copertura completa in Piemonte.
+							</p>
+						</article>
+						<article class="card">
+							<strong>Installazione e collaudo</strong>
+							<p>
+								Supporto chiavi in mano per nuove installazioni, messa in servizio, controllo fumi e rilascio documentazione di conformità secondo normativa.
+							</p>
+						</article>
+						<article class="card">
+							<strong>Manutenzione su misura</strong>
+							<p>
+								Pulizia profonda di bruciatori e canne fumarie, revisione periodica e piano ricambi dedicato per garantire efficienza e sicurezza nel lungo periodo.
+							</p>
+						</article>
+					</div>
+					<div class="tag-cloud" aria-label="Servizi e parole chiave">
+						<span class="tag">assistenza stufe clam</span>
+						<span class="tag">camini clam</span>
+						<span class="tag">ricambi originali</span>
+						<span class="tag">manutenzione pellet</span>
+						<span class="tag">stufe a legna</span>
+						<span class="tag">assistenza in garanzia</span>
+						<span class="tag">guida all'acquisto</span>
+						<span class="tag">servizio clienti dedicato</span>
+					</div>
+				</section>
+
+				<section class="cta-banner" aria-labelledby="cta-stripe">
+					<div class="cta-banner__content">
+						<h2 id="cta-stripe">Hai bisogno di assistenza urgente?</h2>
+						<p>
+							Copriamo tutto il Piemonte e interveniamo anche su chiamata nel Nord-Ovest. Pianifica ora l'uscita di un tecnico certificato Clam e Nordica Extraflame.
+						</p>
+					</div>
+					<div class="cta-banner__actions">
+						<a class="cta cta--primary" href="tel:+393342968625">Chiama ora</a>
+						<a class="cta cta--ghost" href="#contatti">Richiedi intervento</a>
+					</div>
+				</section>
+
+				<section id="contatti">
+					<h2 class="section-title">Dove siamo</h2>
+					<address class="address">
+						<strong>Tropini Service di Tropini Gianfranco</strong>
+						<span>Via San Giorgio 14</span>
+						<span>12030 Cavallermaggiore (CN)</span>
+						<a href="tel:+393342968625">Telefono: 334 296 8625</a>
+					</address>
+					<div class="hours">
+						<strong>Orari</strong>
+						<span>Lunedì – Venerdì · 9:00-12:00 / 14:00-16:00</span>
+						<span>Sabato – Domenica · Chiuso</span>
+					</div>
+					<p class="section-text contact-note">
+						Operiamo in tutto il Piemonte e valutiamo interventi fuori regione per urgenze e clienti fidelizzati. Prenota un sopralluogo telefonico per ricevere una proposta personalizzata.
+					</p>
+				</section>
+
+				<section aria-labelledby="supporto-marchi">
+					<h2 id="supporto-marchi" class="section-title">I nostri marchi</h2>
+					<p class="section-text">
+						Clam, nata nel 1973 con oltre 300.000 famiglie servite, e Nordica Extraflame, marchio presente in 40 paesi, affidano a Tropini Service il supporto certificato per il Piemonte. Dal primo sopralluogo alla manutenzione periodica, seguiamo ogni fase con attenzione artigianale e tecnologie aggiornate.
+					</p>
+				</section>
+
+				<footer>
+					<span>© {currentYear} Tropini Service di Tropini Gianfranco · P.IVA disponibile su richiesta.</span>
+					<span>Centro assistenza accreditato Clam &amp; Nordica Extraflame · Operativi in Piemonte e Nord-Ovest.</span>
+					<a href="tel:+393342968625">Parla ora con un tecnico</a>
+					<span>Powered by <a href="https://bitora.it" target="_blank" rel="noopener">bitora.it</a> · un prodotto di Denis Cazzulo.</span>
+				</footer>
+			</div>
+		</main>
+		<script>
+			// @ts-ignore - proprietà popolata nello script iniziale
+			const themeConfig = window.__theme ?? {};
+			const storageKey =
+				typeof themeConfig.storageKey === "string" ? themeConfig.storageKey : "theme-preference";
+			const preferDarkQuery =
+				typeof themeConfig.preferDarkQuery === "string"
+					? themeConfig.preferDarkQuery
+					: "(prefers-color-scheme: dark)";
+			const applyThemeFn =
+				typeof themeConfig.applyTheme === "function"
+					? themeConfig.applyTheme
+					: // @ts-ignore - annotazione del parametro inline
+					function (theme) {
+						document.documentElement.dataset.theme = theme;
+						document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
+					};
+			const mediaQueryList = window.matchMedia(preferDarkQuery);
+			const themeToggle = /** @type {HTMLElement | null} */ (document.querySelector("[data-theme-toggle]"));
+
+			function getStoredPreference() {
+				try {
+					return window.localStorage.getItem(storageKey);
+				} catch (error) {
+					return null;
+				}
+			}
+
+			// @ts-ignore - parametro annotato tramite JSDoc
+			function updateToggle(theme) {
+				if (!themeToggle) return;
+				const isDark = theme === "dark";
+				// @ts-ignore - dataset disponibile sugli HTMLElement
+				themeToggle.dataset.state = theme;
+				themeToggle.setAttribute("aria-pressed", String(isDark));
+				themeToggle.setAttribute(
+					"aria-label",
+					isDark ? "Passa alla modalità chiara" : "Passa alla modalità scura"
+				);
+			}
+
+			// @ts-ignore - parametro annotato tramite JSDoc
+			function reflectPreference(theme) {
+				applyThemeFn(theme);
+				updateToggle(theme);
+			}
+
+			const storedPreference = getStoredPreference();
+			const systemTheme = mediaQueryList.matches ? "dark" : "light";
+			reflectPreference(storedPreference ?? systemTheme);
+
+			if (themeToggle) {
+				themeToggle.addEventListener("click", () => {
+					const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+					const nextTheme = currentTheme === "dark" ? "light" : "dark";
+					try {
+						window.localStorage.setItem(storageKey, nextTheme);
+					} catch (error) {
+						/* localStorage potrebbe non essere disponibile */
+					}
+					reflectPreference(nextTheme);
+				});
+			}
+
+			mediaQueryList.addEventListener("change", (event) => {
+				if (getStoredPreference() !== null) {
+					return;
+				}
+				reflectPreference(event.matches ? "dark" : "light");
+			});
+		</script>
 	</body>
 </html>

@@ -1,43 +1,48 @@
-# Astro Starter Kit: Minimal
+# Tropini Service · Landing Page
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Sito vetrina in **Astro** per Tropini Service di Tropini Gianfranco, centro assistenza accreditato per stufe e camini Clam e Nordica Extraflame con sede a Cavallermaggiore (CN). Il progetto offre un'unica pagina a scorrimento con design dark mode, accenti rosso/grigio e call to action per contattare rapidamente il servizio tecnico.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## ✨ Funzionalità principali
 
-## 🚀 Project Structure
+- Hero section con messaggio chiave, badge dei marchi serviti e call to action.
+- Sezioni "Chi siamo", "Cosa facciamo", "Dove siamo" e "I nostri marchi" con contenuti ottimizzati SEO.
+- Bottone flottante sempre visibile per chiamare direttamente il numero di assistenza.
+- Palette dark con sfumature e glassmorphism per un look moderno e professionale.
+- Layout responsive ottimizzato per dispositivi mobili e desktop.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 📁 Struttura del progetto
 
 ```text
 /
-├── public/
+├── public/              # Asset statici (favicon, immagini, ecc.)
 ├── src/
 │   └── pages/
-│       └── index.astro
-└── package.json
+│       └── index.astro  # Pagina principale con layout e contenuti
+├── package.json
+└── tsconfig.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🧞 Comandi utili
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Tutti i comandi vanno eseguiti nella root del progetto (`c:\Users\marco.origlia\Desktop\tropini`).
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Comando          | Descrizione                                        |
+| :--------------- | :------------------------------------------------- |
+| `npm install`    | Installa le dipendenze (già eseguito in fase setup) |
+| `npm run dev`    | Avvia il server di sviluppo su `http://localhost:4321` |
+| `npm run build`  | Genera la versione statica pronta per il deploy     |
+| `npm run preview`| Anteprima locale della build                        |
 
-## 🧞 Commands
+## 🚀 Deploy
 
-All commands are run from the root of the project, from a terminal:
+L'output statico è generato nella cartella `dist/`. Può essere pubblicato su qualsiasi hosting statico (Netlify, Vercel, GitHub Pages, ecc.).
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 📞 Contatti
 
-## 👀 Want to learn more?
+- Tropini Service di Tropini Gianfranco
+- Via San Giorgio 14 · 12030 Cavallermaggiore (CN)
+- Tel. [334 296 8625](tel:+393342968625)
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+---
+
+Per modifiche grafiche o test aggiuntivi è sufficiente aggiornare `src/pages/index.astro` e rilanciare `npm run dev` per visualizzare i cambiamenti.

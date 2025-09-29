@@ -1,5 +1,5 @@
 {
-  "name": "--project-name",
+  "name": "tropini-service-landing",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
