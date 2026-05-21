@@ -1,0 +1,313 @@
+﻿---
+const recensioni = [
+  {
+    nome: "Marco R.",
+    luogo: "Cavallermaggiore, CN",
+    stelle: 5,
+    testo: "Stufa a pellet bloccata a Natale, il giorno di Santo Stefano. Ho chiamato Gianfranco quasi senza speranza e in meno di due ore era già qui. Ha individuato subito il problema alla scheda elettronica e l'ha risolto. Professionalità rara!",
+    tag: "Intervento Festivo",
+    data: "Dicembre 2023",
+  },
+  {
+    nome: "Laura B.",
+    luogo: "Savigliano, CN",
+    stelle: 5,
+    testo: "Cercavo da settimane il braciere originale per la mia stufa Qlima. Tutti mi dicevano che era irreperibile. Gianfranco me l'ha trovato e montato in pochi giorni. Finalmente casa mia torna calda. Grazie mille!",
+    tag: "Ricambi Rari",
+    data: "Febbraio 2024",
+  },
+  {
+    nome: "Davide M.",
+    luogo: "Racconigi, CN",
+    stelle: 5,
+    testo: "Caldaia in panne a fine ottobre. Intervento rapido, diagnosi precisa, risolto in giornata. Ottimo rapporto qualità-prezzo e soprattutto persona competente e affidabile. Lo consiglio senza esitazione.",
+    tag: "Caldaia Riparata",
+    data: "Ottobre 2023",
+  },
+  {
+    nome: "Silvia T.",
+    luogo: "Cavallermaggiore, CN",
+    stelle: 5,
+    testo: "Ho fatto installare un nuovo impianto di climatizzazione. Lavoro pulito, puntuale e preciso. Ha rispettato i tempi e il preventivo senza sorprese. Un professionista serio come se ne trovano pochi oggi.",
+    tag: "Climatizzazione",
+    data: "Giugno 2024",
+  },
+  {
+    nome: "Elio F.",
+    luogo: "Marene, CN",
+    stelle: 5,
+    testo: "La mia stufa Clam non accendeva più. Gianfranco ha capito subito che il problema era alla scheda madre — l'ha riparata invece di farmi comprare un pezzo nuovo. Risparmio notevole e onestà totale.",
+    tag: "Scheda Elettronica",
+    data: "Gennaio 2024",
+  },
+];
+
+const primaFila = recensioni.slice(0, 3);
+const secondaFila = recensioni.slice(3);
+---
+
+<section class="recensioni page-section page-section--alt" id="recensioni">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Recensioni Clienti</span>
+      <h2 class="section-title">Cosa dicono di noi</h2>
+      <p class="section-subtitle">
+        Oltre 20 anni di fiducia da parte dei clienti di Cavallermaggiore, Cuneo e provincia.
+      </p>
+      <p class="recensioni__rating">
+        <span class="recensioni__stars" aria-hidden="true">★★★★★</span>
+        <strong>5.0 / 5</strong> — valutazione media
+      </p>
+    </div>
+
+    <div class="recensioni__lists">
+      <div class="recensioni__row">
+        {primaFila.map((r) => (
+          <article class="recensioni__card">
+            <header class="recensioni__card-head">
+              <div class="recensioni__avatar">{r.nome.charAt(0)}</div>
+              <div class="recensioni__meta">
+                <strong>{r.nome}</strong>
+                <span>{r.luogo}</span>
+              </div>
+              <span class="recensioni__stelle" aria-label={`${r.stelle} stelle`}>{"★".repeat(r.stelle)}</span>
+            </header>
+            <p class="recensioni__testo">"{r.testo}"</p>
+            <footer class="recensioni__card-foot">
+              <span class="recensioni__tag">{r.tag}</span>
+              <time>{r.data}</time>
+            </footer>
+          </article>
+        ))}
+      </div>
+      <div class="recensioni__row recensioni__row--due">
+        {secondaFila.map((r) => (
+          <article class="recensioni__card">
+            <header class="recensioni__card-head">
+              <div class="recensioni__avatar">{r.nome.charAt(0)}</div>
+              <div class="recensioni__meta">
+                <strong>{r.nome}</strong>
+                <span>{r.luogo}</span>
+              </div>
+              <span class="recensioni__stelle" aria-label={`${r.stelle} stelle`}>{"★".repeat(r.stelle)}</span>
+            </header>
+            <p class="recensioni__testo">"{r.testo}"</p>
+            <footer class="recensioni__card-foot">
+              <span class="recensioni__tag">{r.tag}</span>
+              <time>{r.data}</time>
+            </footer>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="recensioni__stats">
+      <div class="recensioni__stat">
+        <span class="recensioni__stat-num">20+</span>
+        <p class="recensioni__stat-label">Anni di esperienza</p>
+      </div>
+      <div class="recensioni__stat">
+        <span class="recensioni__stat-num">500+</span>
+        <p class="recensioni__stat-label">Clienti soddisfatti</p>
+      </div>
+      <div class="recensioni__stat">
+        <span class="recensioni__stat-num">2</span>
+        <p class="recensioni__stat-label">Marchi autorizzati</p>
+      </div>
+      <div class="recensioni__stat">
+        <span class="recensioni__stat-num">365</span>
+        <p class="recensioni__stat-label">Giorni reperibili</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .recensioni__rating {
+    margin-top: 1rem;
+    font-size: 0.9375rem;
+    color: var(--color-gray-600);
+  }
+
+  .recensioni__stars {
+    color: #f59e0b;
+    letter-spacing: 0.05em;
+  }
+
+  .recensioni__rating strong {
+    color: var(--color-gray-900);
+  }
+
+  .recensioni__lists {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .recensioni__row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .recensioni__row--due {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 720px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .recensioni__card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .recensioni__card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .recensioni__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-fire), var(--color-orange));
+    color: var(--color-white);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .recensioni__meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .recensioni__meta strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-gray-900);
+  }
+
+  .recensioni__meta span {
+    font-size: 0.78rem;
+    color: var(--color-gray-400);
+  }
+
+  .recensioni__stelle {
+    color: #f59e0b;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .recensioni__testo {
+    font-size: 0.9rem;
+    color: var(--color-gray-700);
+    line-height: 1.6;
+    font-style: italic;
+    flex: 1;
+  }
+
+  .recensioni__card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .recensioni__tag {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--color-fire);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .recensioni__card-foot time {
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
+  }
+
+  .recensioni__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 2rem 1rem;
+    background: var(--color-gray-900);
+    border-radius: var(--radius);
+    color: var(--color-white);
+  }
+
+  .recensioni__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .recensioni__stat:last-child {
+    border-right: none;
+  }
+
+  .recensioni__stat-num {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #fbbf24;
+  }
+
+  .recensioni__stat-label {
+    display: block;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 9rem;
+  }
+
+  @media (max-width: 900px) {
+    .recensioni__row {
+      grid-template-columns: 1fr;
+    }
+
+    .recensioni__row--due {
+      max-width: none;
+    }
+
+    .recensioni__stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem 0;
+      padding: 1.75rem 1rem;
+    }
+
+    .recensioni__stat {
+      border-right: none;
+      padding: 0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .recensioni__stats {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+</style>

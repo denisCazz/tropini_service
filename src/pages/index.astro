@@ -1,17 +1,23 @@
+﻿---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Servizi from "../components/Servizi.astro";
+import ChiSiamo from "../components/ChiSiamo.astro";
+import Recensioni from "../components/Recensioni.astro";
+import Contatti from "../components/Contatti.astro";
+import Footer from "../components/Footer.astro";
 ---
 
----
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Tropini Service | Assistenza Caldaie & Stufe a Pellet — Cavallermaggiore, Cuneo"
+  description="Tropini Service: assistenza stufe pellet Cavallermaggiore e Cuneo. Centro autorizzato CAT Qlima e Clam. Riparazione caldaie, schede elettroniche e climatizzazione. Disponibili anche nei festivi. Chiama: 334 2968625."
+>
+  <Header />
+  <Hero />
+  <Servizi />
+  <ChiSiamo />
+  <Recensioni />
+  <Contatti />
+  <Footer />
+</Layout>

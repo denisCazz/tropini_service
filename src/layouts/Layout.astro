@@ -1,0 +1,213 @@
+﻿---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Tropini Service - Assistenza caldaie, stufe a pellet e impianti idraulici a Cavallermaggiore e Cuneo provincia. Centro assistenza autorizzato Qlima e Clam.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --color-fire-dark: #b91c1c;
+    --color-fire: #dc2626;
+    --color-fire-light: #ef4444;
+    --color-orange: #ea580c;
+    --color-orange-light: #fb923c;
+    --color-amber: #f59e0b;
+    --color-blue: #1d4ed8;
+    --color-blue-light: #3b82f6;
+    --color-blue-dark: #1e3a8a;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-400: #9ca3af;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-white: #ffffff;
+    --font-family: "Inter", system-ui, sans-serif;
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --container-max: 1080px;
+    --container-px: clamp(1.25rem, 4vw, 2rem);
+    --header-h: 5.5rem;
+    --section-y: 5rem;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    font-family: var(--font-family);
+    color: var(--color-gray-800);
+    background: var(--color-white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-px);
+  }
+
+  .page-section {
+    padding-block: var(--section-y);
+  }
+
+  .page-section--alt {
+    background: var(--color-gray-50);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 36rem;
+    margin-inline: auto;
+    margin-bottom: 3rem;
+  }
+
+  .section-header .section-subtitle {
+    margin: 0.875rem auto 0;
+    max-width: 32rem;
+  }
+
+  .section-title br {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .section-title br {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 768px) {
+    :root {
+      --section-y: 3.5rem;
+    }
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-orange);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    line-height: 1.2;
+  }
+
+  .section-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-gray-600);
+    margin-top: 1rem;
+    max-width: 640px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(
+      135deg,
+      var(--color-fire) 0%,
+      var(--color-orange) 100%
+    );
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.5);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--color-white);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    transition: background 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-white);
+  }
+</style>
