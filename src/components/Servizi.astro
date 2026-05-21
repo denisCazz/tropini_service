@@ -1,14 +1,6 @@
 ﻿---
 const servizi = [
   {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-    categoria: "Idraulica",
-    titolo: "Impianti Idraulici",
-    descrizione: "Installazione, manutenzione e riparazione di impianti idraulici civili e industriali. Pronto intervento per guasti e perdite.",
-    color: "blue",
-    features: ["Installazione nuovi impianti", "Riparazione perdite", "Manutenzione preventiva", "Pronto intervento"],
-  },
-  {
     icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z"/><path d="M17 3.34A10 10 0 0 1 22 12"/></svg>`,
     categoria: "Riscaldamento",
     titolo: "Caldaie & Stufe a Pellet",
@@ -40,7 +32,7 @@ const servizi = [
   <div class="container">
     <div class="section-header">
       <span class="section-label">I Nostri Servizi</span>
-      <h2 class="section-title">Tutto per il tuo impianto, dalla A alla Z</h2>
+      <h2 class="section-title">Biomasse, caldaie e riscaldamento: ci pensiamo noi</h2>
       <p class="section-subtitle">
         Da oltre vent'anni serviamo Cavallermaggiore, Cuneo e provincia con competenza, rapidità e ricambi originali.
       </p>
@@ -83,9 +75,15 @@ const servizi = [
 <style>
   .servizi__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.25rem;
     margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .servizi__grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .servizi__card {
