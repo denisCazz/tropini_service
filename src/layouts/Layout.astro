@@ -6,7 +6,7 @@ export interface Props {
 
 const {
   title,
-  description = "Tropini Service - Assistenza caldaie, stufe a pellet e impianti idraulici a Cavallermaggiore e Cuneo provincia. Centro assistenza autorizzato Qlima e Clam.",
+  description = "Tropini Service: assistenza specializzata per stufe a pellet e a legna in tutto il Piemonte. Oltre 4.000 clienti, Extraflame, Eva Calor e decine di altre marche.",
 } = Astro.props;
 ---
 
@@ -21,7 +21,7 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -40,36 +40,35 @@ const {
   }
 
   :root {
-    --color-fire-dark: #b91c1c;
-    --color-fire: #dc2626;
-    --color-fire-light: #ef4444;
+    --color-fire-dark: #9a3412;
+    --color-fire: #c2410c;
+    --color-fire-light: #ea580c;
     --color-orange: #ea580c;
     --color-orange-light: #fb923c;
     --color-amber: #f59e0b;
     --color-blue: #1d4ed8;
     --color-blue-light: #3b82f6;
     --color-blue-dark: #1e3a8a;
-    --color-gray-50: #f9fafb;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-400: #9ca3af;
-    --color-gray-600: #4b5563;
-    --color-gray-700: #374151;
-    --color-gray-800: #1f2937;
-    --color-gray-900: #111827;
+    --color-gray-50: #f7f5f2;
+    --color-gray-100: #efebe6;
+    --color-gray-200: #e2ddd6;
+    --color-gray-400: #8a847a;
+    --color-gray-600: #5c564e;
+    --color-gray-700: #3f3a34;
+    --color-gray-800: #2a2622;
+    --color-gray-900: #1a1714;
     --color-white: #ffffff;
-    --font-family: "Inter", system-ui, sans-serif;
-    --radius: 0.75rem;
-    --radius-lg: 1rem;
-    --container-max: 1080px;
+    --font-family: "Outfit", system-ui, sans-serif;
+    --font-display: "Source Serif 4", Georgia, serif;
+    --radius: 0.5rem;
+    --radius-lg: 0.875rem;
+    --container-max: 1120px;
     --container-px: clamp(1.25rem, 4vw, 2rem);
-    --header-h: 5.5rem;
-    --section-y: 5rem;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-      0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --header-h: 4.75rem;
+    --section-y: clamp(4rem, 8vw, 6.5rem);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 12px 28px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 40px rgb(0 0 0 / 0.12);
   }
 
   html {
@@ -115,72 +114,61 @@ const {
   }
 
   .section-header {
+    max-width: 40rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .section-header--center {
     text-align: center;
-    max-width: 36rem;
     margin-inline: auto;
-    margin-bottom: 3rem;
   }
 
   .section-header .section-subtitle {
-    margin: 0.875rem auto 0;
-    max-width: 32rem;
-  }
-
-  .section-title br {
-    display: none;
-  }
-
-  @media (min-width: 640px) {
-    .section-title br {
-      display: inline;
-    }
-  }
-
-  @media (max-width: 768px) {
-    :root {
-      --section-y: 3.5rem;
-    }
+    margin-top: 0.875rem;
   }
 
   .section-label {
     display: inline-block;
     font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-orange);
+    color: var(--color-fire);
     margin-bottom: 0.75rem;
   }
 
   .section-title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 800;
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 4vw, 2.75rem);
+    font-weight: 700;
     color: var(--color-gray-900);
-    line-height: 1.2;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
   .section-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     color: var(--color-gray-600);
-    margin-top: 1rem;
-    max-width: 640px;
+    line-height: 1.65;
+    max-width: 36rem;
+  }
+
+  .section-header--center .section-subtitle {
+    margin-inline: auto;
   }
 
   .btn-primary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(
-      135deg,
-      var(--color-fire) 0%,
-      var(--color-orange) 100%
-    );
+    background: linear-gradient(135deg, var(--color-fire) 0%, var(--color-orange) 100%);
     color: var(--color-white);
     font-weight: 700;
-    font-size: 1rem;
-    padding: 0.875rem 2rem;
+    font-size: 0.975rem;
+    padding: 0.9rem 1.6rem;
     border-radius: 9999px;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    box-shadow: 0 8px 20px rgba(194, 65, 12, 0.28);
     transition: transform 0.2s, box-shadow 0.2s;
     border: none;
     cursor: pointer;
@@ -188,26 +176,37 @@ const {
 
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.5);
+    box-shadow: 0 12px 28px rgba(194, 65, 12, 0.35);
   }
 
   .btn-secondary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     background: transparent;
     color: var(--color-white);
     font-weight: 600;
-    font-size: 1rem;
-    padding: 0.875rem 2rem;
+    font-size: 0.975rem;
+    padding: 0.9rem 1.6rem;
     border-radius: 9999px;
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
     transition: background 0.2s, border-color 0.2s;
     cursor: pointer;
   }
 
   .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
     border-color: var(--color-white);
+  }
+
+  .btn-secondary--dark {
+    color: var(--color-gray-800);
+    border-color: var(--color-gray-200);
+  }
+
+  .btn-secondary--dark:hover {
+    background: var(--color-gray-50);
+    border-color: var(--color-gray-400);
   }
 </style>

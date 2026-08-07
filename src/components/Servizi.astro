@@ -1,228 +1,156 @@
 ﻿---
 const servizi = [
   {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z"/><path d="M17 3.34A10 10 0 0 1 22 12"/></svg>`,
-    categoria: "Riscaldamento",
-    titolo: "Caldaie & Stufe a Pellet",
-    descrizione: "Centro Assistenza Tecnica Autorizzato (CAT) Qlima e Clam. Riparazione, installazione e manutenzione caldaie e stufe a pellet.",
-    color: "fire",
-    features: ["CAT Qlima & Clam", "Installazione stufe pellet", "Manutenzione annuale", "Ricambi originali"],
-    badge: "CAT Autorizzato",
+    num: "01",
+    titolo: "Stufe a pellet",
+    descrizione:
+      "Diagnosi, riparazione e manutenzione per far tornare la stufa a funzionare in modo sicuro ed efficiente.",
+    points: ["Diagnosi guasti", "Manutenzione", "Riparazione componenti"],
   },
   {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="9" y="16" width="6" height="6" rx="1"/><rect x="2" y="9" width="6" height="6" rx="1"/><rect x="16" y="9" width="6" height="6" rx="1"/><line x1="9" y1="5" x2="8" y2="5"/><line x1="15" y1="5" x2="16" y2="5"/><line x1="5" y1="9" x2="5" y2="8"/><line x1="5" y1="15" x2="5" y2="16"/><line x1="19" y1="9" x2="19" y2="8"/><line x1="19" y1="15" x2="19" y2="16"/><line x1="9" y1="19" x2="8" y2="19"/><line x1="15" y1="19" x2="16" y2="19"/></svg>`,
-    categoria: "Elettronica",
-    titolo: "Riparazione Schede Elettroniche",
-    descrizione: "Diagnosi e riparazione schede elettroniche per impianti di riscaldamento. Competenza specifica su componenti rari e difficilmente reperibili.",
-    color: "orange",
-    features: ["Diagnosi avanzata", "Riparazione schede", "Ricambi rari", "Garanzia interventi"],
+    num: "02",
+    titolo: "Stufe a legna",
+    descrizione:
+      "Controllo e riparazione della stufa a legna per un calore affidabile e prestazioni ottimali.",
+    points: ["Controllo funzionale", "Manutenzione", "Verifica sicurezza"],
   },
   {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 10l2 2 4-4 2 2"/></svg>`,
-    categoria: "Climatizzazione",
-    titolo: "Climatizzazione",
-    descrizione: "Installazione e manutenzione di impianti di condizionamento dell'aria per abitazioni, uffici e capannoni industriali.",
-    color: "sky",
-    features: ["Installazione split", "Manutenzione filtri", "Ricarica gas", "Sistemi multi-split"],
+    num: "03",
+    titolo: "Assistenza multibrand",
+    descrizione:
+      "Extraflame, Eva Calor e decine di altre marche: intervento esperto anche sui guasti più ostici.",
+    points: ["Extraflame", "Eva Calor", "Decine di marchi"],
   },
 ];
 ---
 
 <section class="servizi page-section page-section--alt" id="servizi">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">I Nostri Servizi</span>
-      <h2 class="section-title">Biomasse, caldaie e riscaldamento: ci pensiamo noi</h2>
-      <p class="section-subtitle">
-        Da oltre vent'anni serviamo Cavallermaggiore, Cuneo e provincia con competenza, rapidità e ricambi originali.
-      </p>
-    </div>
-
-    <div class="servizi__grid">
-      {servizi.map((s) => (
-        <div class={`servizi__card servizi__card--${s.color}`}>
-          {s.badge && <div class="servizi__badge">{s.badge}</div>}
-          <div class={`servizi__icon servizi__icon--${s.color}`} set:html={s.icon} />
-          <p class="servizi__categoria">{s.categoria}</p>
-          <h3 class="servizi__titolo">{s.titolo}</h3>
-          <p class="servizi__desc">{s.descrizione}</p>
-          <ul class="servizi__features">
-            {s.features.map((f) => (
-              <li>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-
-    <div class="servizi__cta-bar">
-      <p>Hai un'emergenza? Siamo disponibili anche nei giorni festivi.</p>
-      <a href="tel:3342968625" class="btn-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17.16z"/>
-        </svg>
-        Richiedi Intervento
+    <div class="servizi__top">
+      <div class="section-header">
+        <span class="section-label">Servizi</span>
+        <h2 class="section-title">Tutto ciò che serve alla tua stufa</h2>
+        <p class="section-subtitle">
+          Specializzati in stufe a pellet e a legna. Oltre 4.000 clienti in tutto il Piemonte.
+        </p>
+      </div>
+      <a href="tel:3342968625" class="btn-primary servizi__top-cta">
+        Richiedi assistenza
       </a>
+    </div>
+
+    <div class="servizi__list">
+      {servizi.map((s) => (
+        <article class="servizi__item">
+          <span class="servizi__num" aria-hidden="true">{s.num}</span>
+          <div class="servizi__body">
+            <h3 class="servizi__titolo">{s.titolo}</h3>
+            <p class="servizi__desc">{s.descrizione}</p>
+            <ul class="servizi__points">
+              {s.points.map((p) => <li>{p}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>
 
 <style>
-  .servizi__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    .servizi__grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .servizi__card {
-    position: relative;
-    background: var(--color-white);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    border: 1px solid var(--color-gray-200);
-    transition: box-shadow 0.2s;
-    overflow: hidden;
-  }
-
-  .servizi__card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-  }
-
-  .servizi__card--fire::before { background: linear-gradient(90deg, var(--color-fire), var(--color-orange)); }
-  .servizi__card--blue::before { background: linear-gradient(90deg, var(--color-blue-dark), var(--color-blue-light)); }
-  .servizi__card--orange::before { background: linear-gradient(90deg, var(--color-orange), var(--color-amber)); }
-  .servizi__card--sky::before { background: linear-gradient(90deg, #0284c7, #38bdf8); }
-
-  .servizi__card:hover {
-    box-shadow: var(--shadow-lg);
-  }
-
-  .servizi__badge {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    background: linear-gradient(135deg, var(--color-fire), var(--color-orange));
-    color: var(--color-white);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.625rem;
-    border-radius: 9999px;
-  }
-
-  .servizi__icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 0.75rem;
+  .servizi__top {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.25rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
   }
 
-  .servizi__icon--fire { background: rgba(220, 38, 38, 0.1); color: var(--color-fire); }
-  .servizi__icon--blue { background: rgba(29, 78, 216, 0.1); color: var(--color-blue); }
-  .servizi__icon--orange { background: rgba(234, 88, 12, 0.1); color: var(--color-orange); }
-  .servizi__icon--sky { background: rgba(2, 132, 199, 0.1); color: #0284c7; }
-
-  .servizi__categoria {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-gray-400);
-    margin-bottom: 0.375rem;
+  .servizi__top .section-header {
+    margin-bottom: 0;
   }
 
-  .servizi__titolo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-gray-900);
-    margin-bottom: 0.75rem;
-  }
-
-  .servizi__desc {
-    font-size: 0.9rem;
-    color: var(--color-gray-600);
-    line-height: 1.6;
-    margin-bottom: 1.25rem;
-  }
-
-  .servizi__features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-gray-100);
-  }
-
-  .servizi__features li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: var(--color-gray-700);
-    font-weight: 500;
-  }
-
-  .servizi__features svg {
-    color: #16a34a;
+  .servizi__top-cta {
     flex-shrink: 0;
   }
 
-  .servizi__cta-bar {
+  .servizi__list {
     display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 1.5rem;
-    background: var(--color-gray-900);
-    color: var(--color-white);
-    padding: 1.5rem 2rem;
-    border-radius: var(--radius);
+    gap: 0;
+    border-top: 1px solid var(--color-gray-200);
   }
 
-  .servizi__cta-bar p {
+  .servizi__item {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1.25rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .servizi__num {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-fire);
+    line-height: 1.2;
+    padding-top: 0.15rem;
+  }
+
+  .servizi__titolo {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .servizi__desc {
     font-size: 1rem;
+    color: var(--color-gray-600);
+    line-height: 1.65;
+    max-width: 38rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .servizi__points {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+
+  .servizi__points li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    line-height: 1.45;
+    color: var(--color-gray-700);
   }
 
-  @media (max-width: 768px) {
-    .servizi__grid {
-      grid-template-columns: 1fr;
-    }
+  .servizi__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--color-fire);
   }
 
-  @media (max-width: 640px) {
-    .servizi__cta-bar {
-      grid-template-columns: 1fr;
-      text-align: center;
-      padding: 1.25rem;
+  @media (max-width: 720px) {
+    .servizi__top {
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .servizi__cta-bar .btn-primary {
+    .servizi__top-cta {
       width: 100%;
-      justify-content: center;
+    }
+
+    .servizi__item {
+      grid-template-columns: 3rem 1fr;
+      gap: 0.75rem;
+      padding: 1.35rem 0;
     }
   }
 </style>
