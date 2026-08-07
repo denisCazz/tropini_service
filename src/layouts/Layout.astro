@@ -16,8 +16,22 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const dark = stored
+          ? stored === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.querySelector('meta[name="theme-color"]')?.setAttribute(
+          "content",
+          dark ? "#0b1220" : "#ffffff",
+        );
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,26 +54,39 @@ const {
   }
 
   :root {
-    --color-fire-dark: #9a3412;
-    --color-fire: #c2410c;
-    --color-fire-light: #ea580c;
+    color-scheme: light;
+    --color-fire-dark: #c2410c;
+    --color-fire: #ea580c;
+    --color-fire-light: #f97316;
     --color-orange: #ea580c;
     --color-orange-light: #fb923c;
     --color-amber: #f59e0b;
-    --color-blue: #1d4ed8;
+    --color-blue: #2563eb;
     --color-blue-light: #3b82f6;
-    --color-blue-dark: #1e3a8a;
-    --color-gray-50: #f7f5f2;
-    --color-gray-100: #efebe6;
-    --color-gray-200: #e2ddd6;
-    --color-gray-400: #8a847a;
-    --color-gray-600: #5c564e;
-    --color-gray-700: #3f3a34;
-    --color-gray-800: #2a2622;
-    --color-gray-900: #1a1714;
+    --color-blue-dark: #172554;
+    --color-gray-50: #f8fafc;
+    --color-gray-100: #f1f5f9;
+    --color-gray-200: #e2e8f0;
+    --color-gray-400: #94a3b8;
+    --color-gray-600: #64748b;
+    --color-gray-700: #475569;
+    --color-gray-800: #1e293b;
+    --color-gray-900: #0f172a;
     --color-white: #ffffff;
+    --color-bg: #ffffff;
+    --color-surface: #f8fafc;
+    --color-surface-elevated: #ffffff;
+    --color-text: #1e293b;
+    --color-text-strong: #0f172a;
+    --color-text-muted: #64748b;
+    --color-border: #e2e8f0;
+    --color-header: rgba(255, 255, 255, 0.92);
+    --color-control: #f1f5f9;
+    --color-control-hover: #e2e8f0;
+    --color-on-dark: #ffffff;
+    --color-on-dark-muted: rgba(255, 255, 255, 0.72);
     --font-family: "Outfit", system-ui, sans-serif;
-    --font-display: "Source Serif 4", Georgia, serif;
+    --font-display: "Outfit", system-ui, sans-serif;
     --radius: 0.5rem;
     --radius-lg: 0.875rem;
     --container-max: 1120px;
@@ -71,15 +98,40 @@ const {
     --shadow-xl: 0 20px 40px rgb(0 0 0 / 0.12);
   }
 
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-gray-50: #111c2f;
+    --color-gray-100: #172338;
+    --color-gray-200: #2c3a50;
+    --color-gray-400: #94a3b8;
+    --color-gray-600: #a6b2c3;
+    --color-gray-700: #cbd5e1;
+    --color-gray-800: #e2e8f0;
+    --color-gray-900: #f8fafc;
+    --color-bg: #0b1220;
+    --color-surface: #111c2f;
+    --color-surface-elevated: #172338;
+    --color-text: #e2e8f0;
+    --color-text-strong: #f8fafc;
+    --color-text-muted: #a6b2c3;
+    --color-border: #2c3a50;
+    --color-header: rgba(11, 18, 32, 0.92);
+    --color-control: #172338;
+    --color-control-hover: #233149;
+    --shadow-lg: 0 12px 28px rgb(0 0 0 / 0.24);
+    --shadow-xl: 0 20px 40px rgb(0 0 0 / 0.32);
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 1rem);
+    background: var(--color-bg);
   }
 
   body {
     font-family: var(--font-family);
-    color: var(--color-gray-800);
-    background: var(--color-white);
+    color: var(--color-text);
+    background: var(--color-bg);
     line-height: 1.6;
     overflow-x: hidden;
   }
@@ -110,7 +162,7 @@ const {
   }
 
   .page-section--alt {
-    background: var(--color-gray-50);
+    background: var(--color-surface);
   }
 
   .section-header {
@@ -133,22 +185,22 @@ const {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-fire);
+    color: var(--color-orange);
     margin-bottom: 0.75rem;
   }
 
   .section-title {
     font-family: var(--font-display);
     font-size: clamp(1.85rem, 4vw, 2.75rem);
-    font-weight: 700;
-    color: var(--color-gray-900);
+    font-weight: 800;
+    color: var(--color-text-strong);
     line-height: 1.15;
     letter-spacing: -0.02em;
   }
 
   .section-subtitle {
     font-size: 1.0625rem;
-    color: var(--color-gray-600);
+    color: var(--color-text-muted);
     line-height: 1.65;
     max-width: 36rem;
   }
@@ -162,13 +214,13 @@ const {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, var(--color-fire) 0%, var(--color-orange) 100%);
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     color: var(--color-white);
     font-weight: 700;
     font-size: 0.975rem;
     padding: 0.9rem 1.6rem;
-    border-radius: 9999px;
-    box-shadow: 0 8px 20px rgba(194, 65, 12, 0.28);
+    border-radius: 0.65rem;
+    box-shadow: 0 8px 20px rgb(234 88 12 / 0.24);
     transition: transform 0.2s, box-shadow 0.2s;
     border: none;
     cursor: pointer;
@@ -176,7 +228,7 @@ const {
 
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(194, 65, 12, 0.35);
+    box-shadow: 0 12px 28px rgb(234 88 12 / 0.34);
   }
 
   .btn-secondary {
@@ -189,7 +241,7 @@ const {
     font-weight: 600;
     font-size: 0.975rem;
     padding: 0.9rem 1.6rem;
-    border-radius: 9999px;
+    border-radius: 0.65rem;
     border: 1.5px solid rgba(255, 255, 255, 0.55);
     transition: background 0.2s, border-color 0.2s;
     cursor: pointer;
@@ -201,12 +253,13 @@ const {
   }
 
   .btn-secondary--dark {
-    color: var(--color-gray-800);
-    border-color: var(--color-gray-200);
+    color: var(--color-text);
+    border-color: var(--color-border);
   }
 
   .btn-secondary--dark:hover {
-    background: var(--color-gray-50);
-    border-color: var(--color-gray-400);
+    background: var(--color-surface);
+    border-color: var(--color-text-muted);
   }
+
 </style>

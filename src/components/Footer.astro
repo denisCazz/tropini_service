@@ -53,13 +53,23 @@
         Sito sviluppato da{" "}
         <a href="https://bitora.it" target="_blank" rel="noopener noreferrer">bitora.it</a>
       </p>
+      <button type="button" class="theme-toggle footer__theme-toggle" aria-label="Attiva tema scuro">
+        <svg class="theme-toggle__sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="theme-toggle__moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        Tema <span class="theme-toggle__label">Chiaro</span>
+      </button>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    background: var(--color-gray-900);
+    background: #0b1b36;
     color: rgba(255, 255, 255, 0.7);
   }
 
@@ -72,9 +82,12 @@
   }
 
   .footer__logo {
-    height: 40px;
+    height: 48px;
     width: auto;
     margin-bottom: 1rem;
+    padding: 0.3rem 0.45rem;
+    background: #ffffff;
+    border-radius: 0.45rem;
   }
 
   .footer__brand p {
@@ -117,7 +130,7 @@
 
   .footer__tel {
     display: block;
-    color: #fb923c !important;
+    color: #fdba74 !important;
     font-size: 1.15rem !important;
     font-weight: 700;
     margin-bottom: 0.4rem;
@@ -161,6 +174,36 @@
 
   .footer__credit a:hover {
     color: var(--color-white);
+  }
+
+  .footer__theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .footer__theme-toggle:hover {
+    color: var(--color-white);
+  }
+
+  .theme-toggle__moon {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__sun {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__moon {
+    display: block;
   }
 
   @media (max-width: 900px) {

@@ -1,12 +1,7 @@
 ﻿---
-interface Props {
-  variant?: "default" | "dark";
-}
-
-const { variant = "default" } = Astro.props;
 ---
 
-<header class:list={["site-header", variant === "dark" && "site-header--dark"]}>
+<header class="site-header">
   <div class="container site-header__inner">
     <a href="/" class="site-header__logo">
       <img src="/Logo_Tropini_Service.png" alt="Tropini Service" width="220" height="72" />
@@ -23,7 +18,7 @@ const { variant = "default" } = Astro.props;
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17.16z"/>
       </svg>
-      334 2968625
+      Chiama per supporto
     </a>
 
     <button
@@ -45,33 +40,78 @@ const { variant = "default" } = Astro.props;
       <a href="/#chi-siamo">Chi Siamo</a>
       <a href="/#recensioni">Recensioni</a>
       <a href="/#contatti">Contatti</a>
+      <button type="button" class="theme-toggle site-header__drawer-theme" aria-label="Attiva tema scuro">
+        <span>Tema</span>
+        <span class="site-header__drawer-theme-value">
+          <svg class="theme-toggle__sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+          </svg>
+          <svg class="theme-toggle__moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span class="theme-toggle__label">Chiaro</span>
+        </span>
+      </button>
       <a href="tel:3342968625" class="btn-primary">Chiama ora</a>
     </nav>
   </div>
+  <button class="site-header__backdrop" type="button" aria-label="Chiudi menu" hidden></button>
 </header>
 
 <script>
   const header = document.querySelector(".site-header");
   const toggle = header?.querySelector(".site-header__toggle");
+  const themeToggles = document.querySelectorAll(".theme-toggle");
   const drawer = document.getElementById("site-header-menu");
+  const backdrop = header?.querySelector(".site-header__backdrop");
+
+  const updateThemeControl = () => {
+    const dark = document.documentElement.dataset.theme === "dark";
+    themeToggles.forEach((control) => {
+      control.setAttribute("aria-label", dark ? "Attiva tema chiaro" : "Attiva tema scuro");
+      const label = control.querySelector(".theme-toggle__label");
+      if (label) label.textContent = dark ? "Scuro" : "Chiaro";
+    });
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      "content",
+      dark ? "#0b1220" : "#ffffff",
+    );
+  };
+
+  updateThemeControl();
+  themeToggles.forEach((themeToggle) => {
+    themeToggle.addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme !== "dark";
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+      localStorage.setItem("theme", dark ? "dark" : "light");
+      updateThemeControl();
+    });
+  });
 
   if (toggle && drawer) {
+    const closeMenu = () => {
+      drawer.setAttribute("hidden", "");
+      backdrop?.setAttribute("hidden", "");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.classList.remove("site-header__toggle--open");
+      document.body.classList.remove("menu-open");
+    };
+
     toggle.addEventListener("click", () => {
-      const open = drawer.hidden;
-      drawer.hidden = !open;
+      const open = drawer.hasAttribute("hidden");
+      drawer.toggleAttribute("hidden", !open);
+      backdrop?.toggleAttribute("hidden", !open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.classList.toggle("site-header__toggle--open", open);
       document.body.classList.toggle("menu-open", open);
     });
 
     drawer.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        drawer.hidden = true;
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.classList.remove("site-header__toggle--open");
-        document.body.classList.remove("menu-open");
-      });
+      link.addEventListener("click", closeMenu);
     });
+
+    backdrop?.addEventListener("click", closeMenu);
   }
 </script>
 
@@ -80,33 +120,15 @@ const { variant = "default" } = Astro.props;
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--color-white);
-    border-bottom: 1px solid var(--color-gray-200);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  }
-
-  .site-header--dark {
-    background: var(--color-gray-900);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .site-header--dark .site-header__nav a {
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  .site-header--dark .site-header__nav a:hover {
-    color: var(--color-white);
-  }
-
-  .site-header--dark .site-header__toggle {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .site-header--dark .site-header__toggle span {
-    background: var(--color-white);
+    background: var(--color-header);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgb(15 23 42 / 0.06);
+    backdrop-filter: blur(14px);
   }
 
   .site-header__inner {
+    position: relative;
+    z-index: 3;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -118,6 +140,13 @@ const { variant = "default" } = Astro.props;
     height: 56px;
     width: auto;
     display: block;
+  }
+
+  :global([data-theme="dark"]) .site-header__logo {
+    display: inline-flex;
+    padding: 0.2rem 0.35rem;
+    background: #ffffff;
+    border-radius: 0.45rem;
   }
 
   @media (max-width: 900px) {
@@ -136,12 +165,12 @@ const { variant = "default" } = Astro.props;
   .site-header__nav a {
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--color-gray-700);
+    color: var(--color-text-muted);
     transition: color 0.2s;
   }
 
   .site-header__nav a:hover {
-    color: var(--color-fire);
+    color: var(--color-blue);
   }
 
   .site-header__cta {
@@ -159,7 +188,7 @@ const { variant = "default" } = Astro.props;
     height: 2.5rem;
     padding: 0.5rem;
     border: none;
-    background: var(--color-gray-100);
+    background: var(--color-control);
     border-radius: 0.5rem;
     cursor: pointer;
   }
@@ -168,7 +197,7 @@ const { variant = "default" } = Astro.props;
     display: block;
     height: 2px;
     width: 100%;
-    background: var(--color-gray-800);
+    background: var(--color-text);
     border-radius: 2px;
     transition: transform 0.2s, opacity 0.2s;
   }
@@ -186,12 +215,32 @@ const { variant = "default" } = Astro.props;
   }
 
   .site-header__drawer {
-    border-top: 1px solid var(--color-gray-100);
-    background: var(--color-white);
+    position: relative;
+    z-index: 3;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-elevated);
     padding: 0.5rem 0 1rem;
   }
 
   .site-header__drawer[hidden] {
+    display: none;
+  }
+
+  .site-header__backdrop {
+    position: fixed;
+    z-index: 2;
+    inset: var(--header-h) 0 0;
+    width: 100%;
+    height: calc(100dvh - var(--header-h));
+    padding: 0;
+    background: rgb(11 18 32 / 0.34);
+    border: 0;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    cursor: default;
+  }
+
+  .site-header__backdrop[hidden] {
     display: none;
   }
 
@@ -204,8 +253,8 @@ const { variant = "default" } = Astro.props;
   .site-header__drawer a {
     padding: 0.875rem 0;
     font-weight: 500;
-    color: var(--color-gray-700);
-    border-bottom: 1px solid var(--color-gray-100);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .site-header__drawer a.btn-primary {
@@ -213,6 +262,41 @@ const { variant = "default" } = Astro.props;
     justify-content: center;
     border-bottom: none;
     color: var(--color-white);
+  }
+
+  .site-header__drawer-theme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.875rem 0;
+    color: var(--color-text);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .site-header__drawer-theme-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .theme-toggle__moon {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__sun {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__moon {
+    display: block;
   }
 
   @media (max-width: 900px) {

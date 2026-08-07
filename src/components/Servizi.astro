@@ -21,6 +21,41 @@ const servizi = [
       "Extraflame, Eva Calor e decine di altre marche: intervento esperto anche sui guasti più ostici.",
     points: ["Extraflame", "Eva Calor", "Decine di marchi"],
   },
+  {
+    num: "04",
+    titolo: "Pulizia stufe",
+    descrizione:
+      "Pulizia accurata dei componenti interni per mantenere la stufa efficiente, sicura e pronta all’uso.",
+    points: ["Braciere", "Camera di combustione", "Controllo residui"],
+  },
+  {
+    num: "05",
+    titolo: "Manutenzione",
+    descrizione:
+      "Controlli periodici e interventi preventivi per ridurre i guasti e prolungare la vita della stufa.",
+    points: ["Verifica componenti", "Controllo funzionale", "Prevenzione guasti"],
+  },
+  {
+    num: "06",
+    titolo: "Installazioni",
+    descrizione:
+      "Installazione e configurazione di stufe a pellet e a legna, con verifica del corretto funzionamento.",
+    points: ["Posizionamento", "Configurazione", "Collaudo"],
+  },
+  {
+    num: "07",
+    titolo: "Schede elettroniche",
+    descrizione:
+      "Programmazione, diagnosi e riparazione delle schede elettroniche che gestiscono il funzionamento della stufa.",
+    points: ["Programmazione", "Diagnosi elettronica", "Riparazione"],
+  },
+  {
+    num: "08",
+    titolo: "Reperimento materiali",
+    descrizione:
+      "Ricerca di ricambi, componenti e materiali anche per modelli datati o difficili da trovare.",
+    points: ["Ricambi", "Componenti rari", "Materiali compatibili"],
+  },
 ];
 ---
 
@@ -28,10 +63,11 @@ const servizi = [
   <div class="container">
     <div class="servizi__top">
       <div class="section-header">
-        <span class="section-label">Servizi</span>
-        <h2 class="section-title">Tutto ciò che serve alla tua stufa</h2>
+        <span class="section-label">Cosa facciamo</span>
+        <h2 class="section-title">Assistenza completa per la tua stufa</h2>
         <p class="section-subtitle">
-          Specializzati in stufe a pellet e a legna. Oltre 4.000 clienti in tutto il Piemonte.
+          Dalla diagnosi alla riparazione: interveniamo su stufe a pellet e a legna
+          di tutte le principali marche.
         </p>
       </div>
       <a href="tel:3342968625" class="btn-primary servizi__top-cta">
@@ -75,69 +111,90 @@ const servizi = [
 
   .servizi__list {
     display: grid;
-    gap: 0;
-    border-top: 1px solid var(--color-gray-200);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
   }
 
   .servizi__item {
-    display: grid;
-    grid-template-columns: 4.5rem 1fr;
-    gap: 1.25rem;
-    padding: 1.75rem 0;
-    border-bottom: 1px solid var(--color-gray-200);
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    min-height: 100%;
+    padding: 1.5rem;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .servizi__item:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--color-blue) 45%, var(--color-border));
+    box-shadow: var(--shadow-lg);
   }
 
   .servizi__num {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-fire);
-    line-height: 1.2;
-    padding-top: 0.15rem;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--color-white);
+    background: var(--color-blue);
+    border-radius: 0.55rem;
+    line-height: 1;
+  }
+
+  .servizi__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 
   .servizi__titolo {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--color-gray-900);
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-strong);
+    margin-bottom: 0.65rem;
   }
 
   .servizi__desc {
-    font-size: 1rem;
-    color: var(--color-gray-600);
+    font-size: 0.975rem;
+    color: var(--color-text-muted);
     line-height: 1.65;
-    max-width: 38rem;
-    margin-bottom: 0.875rem;
+    margin-bottom: 1.15rem;
   }
 
   .servizi__points {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
   }
 
   .servizi__points li {
     position: relative;
-    padding-left: 0.9rem;
+    padding-left: 1.35rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--color-gray-700);
+    color: var(--color-text);
   }
 
   .servizi__points li::before {
-    content: "";
+    content: "✓";
     position: absolute;
     left: 0;
-    top: 0.55em;
-    width: 0.35rem;
-    height: 0.35rem;
-    border-radius: 50%;
-    background: var(--color-fire);
+    top: -0.05em;
+    color: var(--color-orange);
+    font-weight: 800;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     .servizi__top {
       flex-direction: column;
       align-items: flex-start;
@@ -147,10 +204,12 @@ const servizi = [
       width: 100%;
     }
 
+    .servizi__list {
+      grid-template-columns: 1fr;
+    }
+
     .servizi__item {
-      grid-template-columns: 3rem 1fr;
-      gap: 0.75rem;
-      padding: 1.35rem 0;
+      padding: 1.35rem;
     }
   }
 </style>

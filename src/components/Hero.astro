@@ -5,7 +5,7 @@
   <div class="hero__media" aria-hidden="true">
     <img
       class="hero__poster"
-      src="/hero.png"
+      src="/hero-poster.jpg"
       alt=""
       width="1920"
       height="1080"
@@ -19,9 +19,9 @@
       loop
       playsinline
       preload="metadata"
-      poster="/hero.png"
+      poster="/hero-poster.jpg"
     >
-      <source data-src="/videos/hero-4k.mp4" data-min="1400" type="video/mp4" />
+      <source data-src="/videos/hero-4k.mp4" data-min="1600" data-4k type="video/mp4" />
       <source data-src="/videos/hero-1080.mp4" data-min="768" type="video/mp4" />
       <source data-src="/videos/hero-720.mp4" data-min="0" type="video/mp4" />
     </video>
@@ -105,15 +105,17 @@
     inset: 0;
     background:
       linear-gradient(
-        105deg,
-        rgba(17, 24, 39, 0.92) 0%,
-        rgba(17, 24, 39, 0.78) 42%,
-        rgba(124, 45, 18, 0.45) 72%,
-        rgba(124, 45, 18, 0.28) 100%
+        90deg,
+        rgba(234, 88, 12, 0.08) 0%,
+        rgba(23, 37, 84, 0.38) 34%,
+        rgba(15, 35, 68, 0.84) 62%,
+        rgba(11, 18, 32, 0.96) 100%
       );
   }
 
   .hero__container {
+    display: flex;
+    justify-content: flex-end;
     width: 100%;
     padding-block: clamp(3.5rem, 10vh, 6.5rem);
   }
@@ -129,7 +131,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #fcd34d;
+    color: #fdba74;
   }
 
   .hero__title {
@@ -142,7 +144,7 @@
   }
 
   .hero__title-accent {
-    background: linear-gradient(90deg, #fb923c, #fbbf24);
+    background: linear-gradient(90deg, #fb923c, #fdba74);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -192,10 +194,14 @@
       background:
         linear-gradient(
           180deg,
-          rgba(17, 24, 39, 0.55) 0%,
-          rgba(17, 24, 39, 0.82) 45%,
-          rgba(17, 24, 39, 0.94) 100%
+          rgba(11, 18, 32, 0.56) 0%,
+          rgba(11, 25, 50, 0.84) 45%,
+          rgba(11, 18, 32, 0.96) 100%
         );
+    }
+
+    .hero__container {
+      justify-content: flex-start;
     }
 
     .hero__actions {
@@ -227,24 +233,46 @@
     if (reduce) {
       video.remove();
     } else {
-      const sources = [...video.querySelectorAll("source")];
-      const width = window.innerWidth;
-      const connection = "connection" in navigator ? navigator.connection : null;
-      const saveData = Boolean(connection && "saveData" in connection && connection.saveData);
-      const pick =
-        sources.find((s) => {
-          const min = Number(s.getAttribute("data-min") || 0);
-          if (saveData && min >= 1400) return false;
-          return width >= min;
-        }) || sources[sources.length - 1];
+      const loadVideo = () => {
+        const sources = [...video.querySelectorAll("source")];
+        const width = window.innerWidth;
+        const connection = (
+          navigator as Navigator & {
+            connection?: { saveData?: boolean; effectiveType?: string };
+          }
+        ).connection;
+        const slowConnection =
+          Boolean(connection?.saveData) ||
+          ["slow-2g", "2g", "3g"].includes(connection?.effectiveType || "");
 
-      const src = pick?.getAttribute("data-src");
-      if (src) video.src = src;
+        const pick = slowConnection
+          ? sources[sources.length - 1]
+          : sources.find((source) => {
+              const min = Number(source.getAttribute("data-min") || 0);
+              const is4k = source.hasAttribute("data-4k");
+              if (is4k && window.devicePixelRatio < 1.75) return false;
+              return width >= min;
+            }) || sources[sources.length - 1];
 
-      const markReady = () => video.classList.add("is-ready");
-      if (video.readyState >= 2) markReady();
-      video.addEventListener("loadeddata", markReady);
-      video.play().catch(() => {});
+        const src = pick?.getAttribute("data-src");
+        if (src) video.src = src;
+
+        const markReady = () => video.classList.add("is-ready");
+        if (video.readyState >= 2) markReady();
+        video.addEventListener("loadeddata", markReady, { once: true });
+        video.play().catch(() => {});
+      };
+
+      const scheduleVideo = () => {
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(loadVideo, { timeout: 1200 });
+        } else {
+          setTimeout(loadVideo, 250);
+        }
+      };
+
+      if (document.readyState === "complete") scheduleVideo();
+      else window.addEventListener("load", scheduleVideo, { once: true });
     }
   }
 </script>
