@@ -1,0 +1,606 @@
+﻿---
+const problemi = [
+  { valore: "non-parte", etichetta: "Non parte" },
+  { valore: "si-spegne", etichetta: "Si spegne" },
+  { valore: "fumo", etichetta: "Fumo o odore" },
+  { valore: "errore", etichetta: "Codice o scheda" },
+  { valore: "ricambio", etichetta: "Ricambio" },
+  { valore: "manutenzione", etichetta: "Manutenzione o pulizia" },
+  { valore: "installazione", etichetta: "Installazione" },
+  { valore: "altro", etichetta: "Altro" },
+];
+
+const preferenze = [
+  { valore: "email", etichetta: "Email" },
+  { valore: "cellulare", etichetta: "Cellulare" },
+  { valore: "fisso", etichetta: "Telefono fisso" },
+];
+---
+
+<dialog class="percorso" id="percorso" aria-labelledby="percorso-titolo">
+  <div class="percorso__corpo">
+    <div class="percorso__testa">
+      <div>
+        <p class="percorso__kicker" data-passo-label>Passo 1 di 3</p>
+        <h2 class="percorso__titolo" id="percorso-titolo">Dicci cosa non va</h2>
+      </div>
+      <button type="button" class="percorso__chiudi" data-chiudi aria-label="Chiudi">×</button>
+    </div>
+    <div class="percorso__barra" aria-hidden="true"><span data-barra></span></div>
+
+    <div class="percorso__passi" role="tablist" aria-label="Passi della richiesta">
+      <button type="button" data-vai="1" aria-current="step">1. Problema</button>
+      <button type="button" data-vai="2">2. Comune</button>
+      <button type="button" data-vai="3">3. Contatto</button>
+    </div>
+
+    <div class="percorso__pannello" data-passo="1">
+      <h3>Cosa succede alla stufa a pellet?</h3>
+      <div class="percorso__scelte">
+        {problemi.map((voce) => (
+          <button type="button" data-campo="problema" data-valore={voce.valore}>{voce.etichetta}</button>
+        ))}
+      </div>
+    </div>
+
+    <div class="percorso__pannello" data-passo="2" hidden>
+      <h3>In quale comune?</h3>
+      <label class="percorso__campo">
+        <span>Comune</span>
+        <input type="text" data-comune maxlength="80" autocomplete="address-level2" placeholder="Es. Savigliano" />
+        <small data-errore="comune"></small>
+      </label>
+      <button type="button" class="percorso__indietro" data-indietro="1">Indietro</button>
+      <button type="button" class="btn-primary" data-avanti-zona>Continua</button>
+    </div>
+
+    <div class="percorso__pannello" data-passo="3" hidden>
+      <h3>Come vuoi procedere?</h3>
+      <p class="percorso__riepilogo" data-riepilogo></p>
+      <div class="percorso__chiamate">
+        <a class="btn-primary" href="tel:3342968625">Chiama il cellulare</a>
+        <a class="btn-secondary btn-secondary--dark" href="tel:0172382695">Chiama il fisso</a>
+      </div>
+
+      <form class="percorso__modulo" data-modulo novalidate>
+        <p class="percorso__aiuto">Oppure invia la richiesta. Ti ricontattiamo noi.</p>
+        <div class="percorso__honeypot" aria-hidden="true">
+          <label>
+            Azienda
+            <input type="text" name="azienda" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+        <label class="percorso__campo">
+          <span>Nome</span>
+          <input type="text" name="nome" autocomplete="name" maxlength="80" required />
+          <small data-errore="nome"></small>
+        </label>
+        <fieldset class="percorso__preferenza">
+          <legend>Come preferisci essere ricontattato</legend>
+          {preferenze.map((voce) => (
+            <label>
+              <input type="radio" name="preferenza" value={voce.valore} />
+              {voce.etichetta}
+            </label>
+          ))}
+          <small data-errore="preferenza"></small>
+        </fieldset>
+        <label class="percorso__campo">
+          <span>Recapito</span>
+          <input type="text" name="recapito" autocomplete="tel" maxlength="120" required />
+          <small data-errore="recapito"></small>
+        </label>
+        <label class="percorso__campo">
+          <span>Note</span>
+          <textarea name="note" maxlength="1000" rows="3"></textarea>
+          <small data-errore="note"></small>
+        </label>
+        <p class="percorso__banner" data-banner hidden></p>
+        <button type="submit" class="btn-primary">Invia richiesta</button>
+      </form>
+
+      <div class="percorso__esito" data-esito hidden>
+        <p data-conferma></p>
+      </div>
+      <button type="button" class="percorso__indietro" data-indietro="2">Indietro</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const root = document.getElementById("percorso");
+  if (root) {
+    const etichette = {
+      problema: {
+        "non-parte": "Non parte",
+        "si-spegne": "Si spegne",
+        fumo: "Fumo o odore",
+        errore: "Codice o scheda",
+        ricambio: "Ricambio",
+        manutenzione: "Manutenzione o pulizia",
+        installazione: "Installazione",
+        altro: "Altro",
+      },
+      conferma: {
+        email: "Richiesta inviata. Ti ricontattiamo via email.",
+        cellulare: "Richiesta inviata. Ti ricontattiamo via cellulare.",
+        fisso: "Richiesta inviata. Ti ricontattiamo via telefono fisso.",
+      },
+    } as const;
+
+    const stato: {
+      stufa: string;
+      problema: string;
+      comune: string;
+    } = { stufa: "pellet", problema: "", comune: "" };
+
+    const comune = root.querySelector("[data-comune]");
+    const modulo = root.querySelector("[data-modulo]");
+    const esito = root.querySelector("[data-esito]");
+    const banner = root.querySelector("[data-banner]");
+    const invio = modulo?.querySelector('button[type="submit"]');
+
+    const zonaScelta = () => stato.comune.trim();
+
+    const primoVuoto = () => {
+      if (!stato.problema) return 1;
+      if (zonaScelta().trim().length < 2) return 2;
+      return 3;
+    };
+
+    const segnaScelte = () => {
+      root.querySelectorAll("[data-campo]").forEach((pulsante) => {
+        const campo = pulsante.getAttribute("data-campo");
+        const valore = pulsante.getAttribute("data-valore");
+        const attivo = campo === "problema" && valore === stato.problema;
+        pulsante.classList.toggle("is-active", attivo);
+        pulsante.setAttribute("aria-pressed", String(attivo));
+      });
+    };
+
+    const scriviComune = (valore: string) => {
+      stato.comune = valore;
+      if (comune instanceof HTMLInputElement && comune.value !== valore) comune.value = valore;
+    };
+
+    const aggiornaRiepilogo = () => {
+      const riepilogo = root.querySelector("[data-riepilogo]");
+      const zona = zonaScelta();
+      if (riepilogo) {
+        const problema =
+          etichette.problema[stato.problema as keyof typeof etichette.problema] || "Problema da definire";
+        riepilogo.textContent = `Stufa a pellet · ${problema} · ${zona || "Comune da indicare"}`;
+      }
+    };
+
+    const mostra = (passo: number) => {
+      root.querySelectorAll("[data-passo]").forEach((pannello) => {
+        pannello.toggleAttribute("hidden", Number(pannello.getAttribute("data-passo")) !== passo);
+      });
+      root.querySelectorAll("[data-vai]").forEach((pulsante) => {
+        const numero = Number(pulsante.getAttribute("data-vai"));
+        if (numero === passo) pulsante.setAttribute("aria-current", "step");
+        else pulsante.removeAttribute("aria-current");
+        pulsante.toggleAttribute("disabled", numero > primoVuoto());
+      });
+      const etichetta = root.querySelector("[data-passo-label]");
+      if (etichetta) etichetta.textContent = `Passo ${passo} di 3`;
+      const barra = root.querySelector("[data-barra]");
+      if (barra instanceof HTMLElement) barra.style.width = `${(passo / 3) * 100}%`;
+      aggiornaRiepilogo();
+    };
+
+    const apri = (passo: number) => {
+      mostra(passo);
+      if (root instanceof HTMLDialogElement && !root.open) root.showModal();
+    };
+
+    root.querySelectorAll("[data-campo]").forEach((pulsante) => {
+      pulsante.addEventListener("click", () => {
+        const campo = pulsante.getAttribute("data-campo");
+        const valore = pulsante.getAttribute("data-valore") || "";
+        if (campo === "problema") stato.problema = valore;
+        segnaScelte();
+        mostra(2);
+      });
+    });
+
+    root.querySelectorAll("[data-indietro]").forEach((pulsante) => {
+      pulsante.addEventListener("click", () => {
+        mostra(Number(pulsante.getAttribute("data-indietro")));
+      });
+    });
+
+    root.querySelectorAll("[data-vai]").forEach((pulsante) => {
+      pulsante.addEventListener("click", () => {
+        const numero = Number(pulsante.getAttribute("data-vai"));
+        if (numero <= primoVuoto()) mostra(numero);
+      });
+    });
+
+    comune?.addEventListener("input", () => {
+      if (comune instanceof HTMLInputElement) stato.comune = comune.value;
+      const errore = root.querySelector('[data-errore="comune"]');
+      if (errore) errore.textContent = "";
+      aggiornaRiepilogo();
+    });
+
+    root.querySelector("[data-avanti-zona]")?.addEventListener("click", () => {
+      const errore = root.querySelector('[data-errore="comune"]');
+      if (zonaScelta().length < 2) {
+        if (errore) errore.textContent = "Indica il comune.";
+        if (comune instanceof HTMLInputElement) comune.focus();
+        return;
+      }
+      if (errore) errore.textContent = "";
+      mostra(3);
+    });
+
+    document.addEventListener("tropini:percorso", (evento) => {
+      const dettaglio = (evento as CustomEvent<{ stufa?: string; problema?: string; zona?: string }>).detail || {};
+      if (dettaglio.problema) stato.problema = dettaglio.problema;
+      if (dettaglio.zona) scriviComune(dettaglio.zona);
+      segnaScelte();
+      apri(primoVuoto());
+    });
+
+    document.addEventListener("tropini:zona", (evento) => {
+      const dettaglio = (evento as CustomEvent<{ zona?: string; scorri?: boolean }>).detail;
+      if (!dettaglio || typeof dettaglio.zona !== "string") return;
+      scriviComune(dettaglio.zona);
+      aggiornaRiepilogo();
+      if (dettaglio.scorri) apri(primoVuoto());
+    });
+
+    const apriDaLink = (evento: Event) => {
+      const origine = evento.target;
+      if (!(origine instanceof Element)) return;
+      const link = origine.closest('a[href="#percorso"], a[href="/#percorso"]');
+      if (!link) return;
+      evento.preventDefault();
+      apri(primoVuoto());
+    };
+
+    document.addEventListener("click", apriDaLink);
+    root.querySelector("[data-chiudi]")?.addEventListener("click", () => {
+      if (root instanceof HTMLDialogElement) root.close();
+    });
+    root.addEventListener("click", (evento) => {
+      if (evento.target === root && root instanceof HTMLDialogElement) root.close();
+    });
+    if (window.location.hash === "#percorso") apri(primoVuoto());
+
+    const pulisciErrori = () => {
+      root.querySelectorAll("[data-errore]").forEach((nodo) => {
+        nodo.textContent = "";
+      });
+      if (banner instanceof HTMLElement) {
+        banner.hidden = true;
+        banner.replaceChildren();
+      }
+    };
+
+    const mostraErroreInvio = (testo: string) => {
+      if (!(banner instanceof HTMLElement)) return;
+      banner.hidden = false;
+      banner.replaceChildren();
+      for (const parte of testo.split(/(334 2968625|0172 382695)/)) {
+        if (parte === "334 2968625" || parte === "0172 382695") {
+          const link = document.createElement("a");
+          link.href = parte === "334 2968625" ? "tel:3342968625" : "tel:0172382695";
+          link.textContent = parte;
+          banner.append(link);
+        } else {
+          banner.append(document.createTextNode(parte));
+        }
+      }
+    };
+
+    modulo?.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      if (!(modulo instanceof HTMLFormElement) || !(invio instanceof HTMLButtonElement)) return;
+      pulisciErrori();
+      const dati = new FormData(modulo);
+      const preferenza = String(dati.get("preferenza") || "");
+      invio.disabled = true;
+      try {
+        const risposta = await fetch("/api/richiesta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            stufa: "pellet",
+            problema: stato.problema,
+            zona: zonaScelta(),
+            nome: String(dati.get("nome") || ""),
+            recapito: String(dati.get("recapito") || ""),
+            preferenza,
+            note: String(dati.get("note") || ""),
+            azienda: String(dati.get("azienda") || ""),
+          }),
+        });
+        const corpo = (await risposta.json()) as {
+          ok?: boolean;
+          campi?: Record<string, string>;
+          errore?: string;
+        };
+        if (risposta.ok && corpo.ok) {
+          if (modulo instanceof HTMLElement) modulo.hidden = true;
+          if (esito instanceof HTMLElement) esito.hidden = false;
+          const conferma = root.querySelector("[data-conferma]");
+          if (conferma) {
+            conferma.textContent =
+              etichette.conferma[preferenza as keyof typeof etichette.conferma] ||
+              "Richiesta inviata.";
+          }
+          return;
+        }
+        if (corpo.campi) {
+          for (const [campo, messaggio] of Object.entries(corpo.campi)) {
+            const nodo = root.querySelector(`[data-errore="${campo}"]`);
+            if (nodo) nodo.textContent = messaggio;
+          }
+        }
+        if (corpo.errore) mostraErroreInvio(corpo.errore);
+        if (!corpo.campi && !corpo.errore) {
+          mostraErroreInvio("Non siamo riusciti a inviare. Chiama il 334 2968625 o il 0172 382695.");
+        }
+      } catch {
+        mostraErroreInvio("Non siamo riusciti a inviare. Chiama il 334 2968625 o il 0172 382695.");
+      } finally {
+        invio.disabled = false;
+      }
+    });
+
+    segnaScelte();
+    mostra(1);
+  }
+</script>
+
+<style>
+  .percorso {
+    width: min(40rem, calc(100vw - 1.5rem));
+    max-height: min(92dvh, 52rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .percorso::backdrop {
+    background: rgb(20 20 20 / 0.55);
+  }
+
+  .percorso__corpo {
+    max-height: min(92dvh, 52rem);
+    overflow: auto;
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+
+  .percorso__testa {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .percorso__kicker {
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .percorso__titolo {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--color-text-strong);
+  }
+
+  .percorso__chiudi {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .percorso__barra {
+    height: 2px;
+    margin-bottom: 1rem;
+    background: var(--color-border);
+  }
+
+  .percorso__barra span {
+    display: block;
+    width: 25%;
+    height: 100%;
+    background: #9a3412;
+  }
+
+  .percorso__passi {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .percorso__passi button {
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    background: var(--color-surface-elevated);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .percorso__passi button[aria-current="step"] {
+    color: var(--color-bg);
+    background: var(--color-text-strong);
+    border-color: var(--color-text-strong);
+  }
+
+  .percorso__passi button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .percorso__pannello {
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+
+  .percorso__pannello h3 {
+    margin-bottom: 1rem;
+    font-size: 1.35rem;
+    color: var(--color-text-strong);
+  }
+
+  .percorso__scelte {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .percorso__scelte button,
+  .percorso__preferenza label {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .percorso__scelte button.is-active,
+  .percorso__preferenza label:has(input:checked) {
+    color: var(--color-bg);
+    background: var(--color-text-strong);
+    border-color: var(--color-text-strong);
+  }
+
+  .percorso__aiuto,
+  .percorso__zona,
+  .percorso__riepilogo {
+    margin: 0.8rem 0 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .percorso__riepilogo {
+    font-weight: 700;
+    color: var(--color-text-strong);
+  }
+
+  .percorso__campo,
+  .percorso__preferenza {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    border: 0;
+    padding: 0;
+  }
+
+  .percorso__campo span,
+  .percorso__preferenza legend {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .percorso__campo input,
+  .percorso__campo textarea {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font: inherit;
+  }
+
+  .percorso__campo small,
+  .percorso__preferenza small,
+  .percorso__banner {
+    color: var(--color-fire);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .percorso__banner a {
+    color: var(--color-fire);
+    text-decoration: underline;
+  }
+
+  .percorso__preferenza {
+    gap: 0.65rem;
+  }
+
+  .percorso__preferenza label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .percorso__chiamate {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .percorso__modulo {
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .percorso__honeypot {
+    position: absolute;
+    left: -9999px;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .percorso__indietro {
+    margin-top: 1rem;
+    margin-right: 0.75rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .percorso__esito p {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-strong);
+  }
+
+  @media (max-width: 640px) {
+    .percorso__chiamate .btn-primary,
+    .percorso__chiamate .btn-secondary,
+    .percorso__modulo .btn-primary,
+    .percorso__pannello > .btn-primary {
+      width: 100%;
+    }
+  }
+</style>

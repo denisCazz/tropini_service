@@ -1,0 +1,62 @@
+﻿---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import {
+  COOKIE_NAME,
+  cookieSecure,
+  missingAdminEnv,
+  passwordMatches,
+  SESSION_SECONDS,
+  signSession,
+  verifySession,
+} from "../../lib/admin/logic";
+
+const missing = missingAdminEnv(process.env);
+const secret = process.env.ADMIN_SESSION_SECRET ?? "";
+const token = Astro.cookies.get(COOKIE_NAME)?.value;
+if (!missing.length && token && verifySession(token, secret)) {
+  return Astro.redirect("/admin");
+}
+
+let error = "";
+if (Astro.request.method === "POST") {
+  if (missing.length) {
+    error = `Mancano le variabili: ${missing.join(", ")}.`;
+  } else {
+    const form = await Astro.request.formData();
+    const password = String(form.get("password") ?? "");
+    if (!passwordMatches(password, process.env.ADMIN_PASSWORD ?? "")) {
+      error = "Password non corretta.";
+    } else {
+      Astro.cookies.set(COOKIE_NAME, signSession(secret), {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: SESSION_SECONDS,
+        secure: cookieSecure(Astro.url.protocol, process.env.COOKIE_SECURE),
+      });
+      return Astro.redirect("/admin");
+    }
+  }
+}
+---
+
+<AdminLayout title="Accesso clienti | Tropini Service" showNav={false}>
+  <form class="admin__login" method="post">
+    <p class="section-label">Officina</p>
+    <h1>Anagrafica clienti</h1>
+    <p class="admin__lead">Entra con la password condivisa.</p>
+    {missing.length > 0 && (
+      <p class="admin__alert" role="alert">Mancano le variabili: {missing.join(", ")}.</p>
+    )}
+    {error && <p class="admin__alert" role="alert">{error}</p>}
+    <label class="admin__field" style="margin-top: 1rem;">
+      Password
+      <input type="password" name="password" autocomplete="current-password" required />
+    </label>
+    <div class="admin__actions">
+      <button class="btn-primary" type="submit">Entra</button>
+    </div>
+  </form>
+</AdminLayout>

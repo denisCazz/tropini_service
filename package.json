@@ -9,9 +9,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --experimental-strip-types --test src/lib/admin/logic.test.ts src/lib/richiesta.test.ts"
   },
   "dependencies": {
-    "astro": "^7.2.0"
+    "@astrojs/node": "^11.1.6",
+    "astro": "^7.2.0",
+    "pg": "^8.23.1",
+    "resend": "^6.32.0"
   }
 }

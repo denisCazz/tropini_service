@@ -1,0 +1,56 @@
+﻿---
+---
+
+<div class="barra-contatto">
+  <a href="tel:3342968625">Cellulare</a>
+  <a href="tel:0172382695">Fisso</a>
+  <a href="#percorso">Richiedi</a>
+</div>
+
+<style>
+  .barra-contatto {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .barra-contatto {
+      position: fixed;
+      z-index: 900;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom));
+      background: var(--color-header);
+      border-top: 1px solid var(--color-border);
+      box-shadow: none;
+    }
+
+    .barra-contatto a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+      border-radius: 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-text);
+      background: var(--color-control);
+    }
+
+    .barra-contatto a:last-child {
+      color: var(--color-white);
+      background: #9a3412;
+    }
+
+    :global(body:has(.barra-contatto)) {
+      padding-bottom: calc(4.4rem + env(safe-area-inset-bottom));
+    }
+
+    :global(body.menu-open) .barra-contatto {
+      display: none;
+    }
+  }
+</style>

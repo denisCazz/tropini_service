@@ -1,0 +1,98 @@
+﻿---
+export const prerender = false;
+
+import CampiCliente from "../../../components/admin/CampiCliente.astro";
+import CampiIntervento from "../../../components/admin/CampiIntervento.astro";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { addIntervento, createCliente, findClienteByContatti } from "../../../lib/admin/db";
+import { interventoHasContent, validateCliente, validateIntervento } from "../../../lib/admin/logic";
+
+function campo(form: FormData, name: string): string {
+  const value = form.get(name);
+  return typeof value === "string" ? value : "";
+}
+
+const empty = {
+  nome: "",
+  telefono: "",
+  email: "",
+  indirizzo: "",
+  comune: "",
+  marca: "",
+  modello: "",
+  note: "",
+};
+
+let values = { ...empty };
+let intervento = { data: "", stato: "nuovo", canale: "", problema: "", lavoro: "", nota: "" };
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  values = {
+    nome: campo(form, "nome"),
+    telefono: campo(form, "telefono"),
+    email: campo(form, "email"),
+    indirizzo: campo(form, "indirizzo"),
+    comune: campo(form, "comune"),
+    marca: campo(form, "marca"),
+    modello: campo(form, "modello"),
+    note: campo(form, "note"),
+  };
+  intervento = {
+    data: campo(form, "data"),
+    stato: campo(form, "stato") || "nuovo",
+    canale: campo(form, "canale"),
+    problema: campo(form, "problema"),
+    lavoro: campo(form, "lavoro"),
+    nota: campo(form, "nota"),
+  };
+
+  const cliente = validateCliente(values);
+  if (!cliente.ok) {
+    error = cliente.error;
+  } else {
+    let primo = null;
+    if (interventoHasContent(intervento)) {
+      const parsed = validateIntervento(intervento);
+      if (!parsed.ok) error = parsed.error;
+      else primo = parsed.value;
+    }
+    if (!error) {
+      try {
+        const existing = await findClienteByContatti(
+          cliente.value.telefonoNorm,
+          cliente.value.emailNorm,
+        );
+        if (existing) {
+          if (primo) await addIntervento(existing.id, primo);
+          return Astro.redirect(`/admin/clienti/${existing.id}?esistente=1`, 303);
+        }
+        const id = await createCliente(cliente.value, primo);
+        return Astro.redirect(`/admin/clienti/${id}?salvato=1`, 303);
+      } catch (err) {
+        error = err instanceof Error ? err.message : "Errore imprevisto.";
+      }
+    }
+  }
+}
+---
+
+<AdminLayout title="Nuovo cliente | Tropini Service">
+  <h1>Nuovo cliente</h1>
+  <p class="admin__lead">Scheda inserita a mano in officina.</p>
+  {error && <p class="admin__alert" role="alert">{error}</p>}
+  <form method="post" class="admin__card" style="margin-top: 1rem;">
+    <div class="admin__grid">
+      <CampiCliente values={values} />
+    </div>
+    <h2 style="margin-top: 1.5rem;">Primo intervento, se c'è già</h2>
+    <div class="admin__grid" style="margin-top: 0.8rem;">
+      <CampiIntervento {...intervento} />
+    </div>
+    <div class="admin__actions">
+      <button class="btn-primary" type="submit">Salva cliente</button>
+      <a class="btn-secondary btn-secondary--dark" href="/admin">Annulla</a>
+    </div>
+  </form>
+</AdminLayout>

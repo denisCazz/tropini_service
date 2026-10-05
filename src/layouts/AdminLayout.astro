@@ -1,0 +1,334 @@
+﻿---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  showNav?: boolean;
+}
+
+const { title, showNav = true } = Astro.props;
+---
+
+<Layout title={title} robots="noindex, nofollow">
+  <div class="admin">
+    {
+      showNav && (
+        <header class="admin__bar">
+          <a class="admin__brand" href="/admin">
+            Tropini Service <span>Clienti</span>
+          </a>
+          <nav class="admin__nav">
+            <a href="/admin/clienti/nuovo">Nuovo cliente</a>
+            <form method="post" action="/admin/logout">
+              <button type="submit">Esci</button>
+            </form>
+          </nav>
+        </header>
+      )
+    }
+    <main class="admin__main">
+      <slot />
+    </main>
+  </div>
+</Layout>
+
+<style is:global>
+  .admin {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgb(249 115 22 / 0.14), transparent 28rem),
+      var(--color-bg);
+  }
+
+  .admin__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem var(--container-px);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-header);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+  }
+
+  .admin__brand {
+    color: var(--color-text-strong);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .admin__brand span {
+    color: var(--color-fire);
+  }
+
+  .admin__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .admin__nav a,
+  .admin__nav button {
+    font: inherit;
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-control);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+  }
+
+  .admin__nav a:hover,
+  .admin__nav button:hover {
+    background: var(--color-control-hover);
+  }
+
+  .admin__main {
+    width: min(1080px, 100%);
+    margin-inline: auto;
+    padding: 1.75rem var(--container-px) 3rem;
+  }
+
+  .admin h1 {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--color-text-strong);
+  }
+
+  .admin__lead {
+    margin-top: 0.4rem;
+    color: var(--color-text-muted);
+  }
+
+  .admin__alert {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--color-fire) 12%, var(--color-surface));
+    color: var(--color-text-strong);
+    border: 1px solid color-mix(in srgb, var(--color-fire) 35%, var(--color-border));
+  }
+
+  .admin__ok {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, #16a34a 14%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, #16a34a 35%, var(--color-border));
+  }
+
+  .admin__filters,
+  .admin__card,
+  .admin__login {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+
+  .admin__filters {
+    display: grid;
+    grid-template-columns: 1fr 14rem auto;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+    padding: 0.85rem;
+  }
+
+  .admin__card,
+  .admin__login {
+    padding: 1.25rem;
+  }
+
+  .admin__login {
+    width: min(26rem, 100%);
+    margin: 12vh auto 0;
+  }
+
+  .admin__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem 1rem;
+  }
+
+  .admin__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .admin__field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .admin input,
+  .admin select,
+  .admin textarea {
+    font: inherit;
+    font-weight: 500;
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.65rem;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .admin textarea {
+    min-height: 6.5rem;
+    resize: vertical;
+  }
+
+  .admin input:focus,
+  .admin select:focus,
+  .admin textarea:focus {
+    outline: 2px solid color-mix(in srgb, var(--color-fire) 55%, white);
+    border-color: var(--color-fire);
+  }
+
+  .admin__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .admin__table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-elevated);
+  }
+
+  .admin table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .admin th,
+  .admin td {
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  .admin th {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .admin tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .admin tbody tr:hover td {
+    background: var(--color-surface);
+  }
+
+  .admin__name {
+    color: var(--color-text-strong);
+    font-weight: 700;
+  }
+
+  .admin__muted {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .admin__badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--color-control);
+  }
+
+  .admin__badge--nuovo { background: color-mix(in srgb, var(--color-fire) 18%, var(--color-surface)); }
+  .admin__badge--programmato { background: color-mix(in srgb, var(--color-blue) 16%, var(--color-surface)); }
+  .admin__badge--in_corso { background: color-mix(in srgb, var(--color-amber) 28%, var(--color-surface)); }
+  .admin__badge--completato { background: color-mix(in srgb, #16a34a 18%, var(--color-surface)); }
+  .admin__badge--annullato { background: var(--color-control); color: var(--color-text-muted); }
+  .admin__badge--sito { background: color-mix(in srgb, var(--color-blue) 14%, var(--color-surface)); }
+
+  .admin__pages {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .admin__split {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 1rem;
+    align-items: start;
+    margin-top: 1rem;
+  }
+
+  .admin__timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.8rem;
+  }
+
+  .admin__visit {
+    border-left: 3px solid var(--color-fire);
+    padding: 0.2rem 0 0.2rem 0.85rem;
+  }
+
+  .admin__visit p {
+    margin-top: 0.25rem;
+  }
+
+  .admin h2 {
+    font-size: 1.15rem;
+    color: var(--color-text-strong);
+  }
+
+  @media (max-width: 760px) {
+    .admin__filters,
+    .admin__grid,
+    .admin__split {
+      grid-template-columns: 1fr;
+    }
+
+    .admin thead {
+      display: none;
+    }
+
+    .admin tr,
+    .admin td {
+      display: block;
+    }
+
+    .admin td {
+      border-bottom: 0;
+      padding-bottom: 0.2rem;
+    }
+
+    .admin td:last-child {
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.9rem;
+    }
+
+    .admin td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+  }
+</style>

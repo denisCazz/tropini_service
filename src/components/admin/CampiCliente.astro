@@ -1,0 +1,49 @@
+﻿---
+interface Props {
+  values: {
+    nome: string;
+    telefono: string;
+    email: string;
+    indirizzo: string;
+    comune: string;
+    marca: string;
+    modello: string;
+    note: string;
+  };
+}
+
+const { values } = Astro.props;
+---
+
+<label class="admin__field">
+  Nome
+  <input name="nome" required maxlength="200" value={values.nome} autocomplete="name" />
+</label>
+<label class="admin__field">
+  Telefono
+  <input name="telefono" maxlength="300" value={values.telefono} autocomplete="tel" />
+</label>
+<label class="admin__field">
+  Email
+  <input name="email" type="email" maxlength="300" value={values.email} autocomplete="email" />
+</label>
+<label class="admin__field">
+  Comune
+  <input name="comune" maxlength="300" value={values.comune} />
+</label>
+<label class="admin__field admin__field--wide">
+  Indirizzo
+  <input name="indirizzo" maxlength="300" value={values.indirizzo} autocomplete="street-address" />
+</label>
+<label class="admin__field">
+  Marca stufa
+  <input name="marca" maxlength="300" value={values.marca} />
+</label>
+<label class="admin__field">
+  Modello
+  <input name="modello" maxlength="300" value={values.modello} />
+</label>
+<label class="admin__field admin__field--wide">
+  Note
+  <textarea name="note" maxlength="4000">{values.note}</textarea>
+</label>
