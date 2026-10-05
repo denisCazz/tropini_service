@@ -1,4 +1,6 @@
 ﻿---
+const shopUrl = import.meta.env.PUBLIC_SHOP_URL || "http://localhost:3456";
+
 const servizi = [
   {
     num: "01",
@@ -55,6 +57,7 @@ const servizi = [
       "Ricerca di ricambi, componenti e materiali anche per modelli datati o difficili da trovare.",
     points: ["Ricambi", "Componenti rari", "Materiali compatibili"],
     prefill: { problema: "ricambio" },
+    shop: true,
   },
 ];
 ---
@@ -85,9 +88,12 @@ const servizi = [
             <ul class="servizi__points">
               {s.points.map((p) => <li>{p}</li>)}
             </ul>
-            <button type="button" class="servizi__apri" data-prefill={JSON.stringify(s.prefill)}>
-              Descrivi il problema
-            </button>
+            <div class="servizi__azioni">
+              <button type="button" class="servizi__apri" data-prefill={JSON.stringify(s.prefill)}>
+                Descrivi il problema
+              </button>
+              {("shop" in s && s.shop) ? <a class="servizi__shop" href={shopUrl}>Apri lo shop</a> : null}
+            </div>
           </div>
         </article>
       ))}
@@ -186,9 +192,16 @@ const servizi = [
     color: var(--color-text);
   }
 
+  .servizi__azioni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.25rem;
+    margin-top: 1rem;
+  }
+
   .servizi__apri {
     align-self: flex-start;
-    margin-top: 1rem;
+    margin-top: 0;
     padding: 0;
     border: 0;
     background: transparent;
@@ -200,6 +213,15 @@ const servizi = [
 
   .servizi__apri:hover {
     color: var(--color-fire-dark);
+  }
+
+  .servizi__shop {
+    font-weight: 800;
+    color: var(--color-text-strong);
+  }
+
+  .servizi__shop:hover {
+    color: var(--color-fire);
   }
 
   .servizi__points li::before {
