@@ -60,12 +60,12 @@ const recensioni = [
     color: var(--color-text-muted);
     background: var(--color-surface-elevated);
     border: 1px solid var(--color-border);
-    border-radius: 0.65rem;
+    border-radius: 0;
     font-size: 0.875rem;
   }
 
   .recensioni__summary strong {
-    color: var(--color-orange);
+    color: var(--color-text-strong);
     font-size: 1rem;
   }
 
@@ -83,8 +83,9 @@ const recensioni = [
 
   .recensioni__quote {
     margin: 0;
-    padding: 0;
+    padding: 1.25rem 0 0;
     border: none;
+    border-top: 1px solid var(--color-border);
   }
 
   .recensioni__quote p {

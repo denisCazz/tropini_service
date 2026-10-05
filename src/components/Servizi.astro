@@ -6,55 +6,55 @@ const servizi = [
     descrizione:
       "Diagnosi, riparazione e manutenzione per far tornare la stufa a funzionare in modo sicuro ed efficiente.",
     points: ["Diagnosi guasti", "Manutenzione", "Riparazione componenti"],
+    prefill: { stufa: "pellet" },
   },
   {
     num: "02",
-    titolo: "Stufe a legna",
-    descrizione:
-      "Controllo e riparazione della stufa a legna per un calore affidabile e prestazioni ottimali.",
-    points: ["Controllo funzionale", "Manutenzione", "Verifica sicurezza"],
-  },
-  {
-    num: "03",
     titolo: "Assistenza multibrand",
     descrizione:
       "Extraflame, Eva Calor e decine di altre marche: intervento esperto anche sui guasti più ostici.",
     points: ["Extraflame", "Eva Calor", "Decine di marchi"],
+    prefill: {},
   },
   {
-    num: "04",
+    num: "03",
     titolo: "Pulizia stufe",
     descrizione:
       "Pulizia accurata dei componenti interni per mantenere la stufa efficiente, sicura e pronta all’uso.",
     points: ["Braciere", "Camera di combustione", "Controllo residui"],
+    prefill: { problema: "manutenzione" },
   },
   {
-    num: "05",
+    num: "04",
     titolo: "Manutenzione",
     descrizione:
       "Controlli periodici e interventi preventivi per ridurre i guasti e prolungare la vita della stufa.",
     points: ["Verifica componenti", "Controllo funzionale", "Prevenzione guasti"],
+    prefill: { problema: "manutenzione" },
+  },
+  {
+    num: "05",
+    titolo: "Installazioni",
+    descrizione:
+      "Installazione e configurazione di stufe a pellet, con verifica del corretto funzionamento.",
+    points: ["Posizionamento", "Configurazione", "Collaudo"],
+    prefill: { problema: "installazione" },
   },
   {
     num: "06",
-    titolo: "Installazioni",
-    descrizione:
-      "Installazione e configurazione di stufe a pellet e a legna, con verifica del corretto funzionamento.",
-    points: ["Posizionamento", "Configurazione", "Collaudo"],
-  },
-  {
-    num: "07",
     titolo: "Schede elettroniche",
     descrizione:
       "Programmazione, diagnosi e riparazione delle schede elettroniche che gestiscono il funzionamento della stufa.",
     points: ["Programmazione", "Diagnosi elettronica", "Riparazione"],
+    prefill: { problema: "errore" },
   },
   {
-    num: "08",
+    num: "07",
     titolo: "Reperimento materiali",
     descrizione:
       "Ricerca di ricambi, componenti e materiali anche per modelli datati o difficili da trovare.",
     points: ["Ricambi", "Componenti rari", "Materiali compatibili"],
+    prefill: { problema: "ricambio" },
   },
 ];
 ---
@@ -66,7 +66,7 @@ const servizi = [
         <span class="section-label">Cosa facciamo</span>
         <h2 class="section-title">Assistenza completa per la tua stufa</h2>
         <p class="section-subtitle">
-          Dalla diagnosi alla riparazione: interveniamo su stufe a pellet e a legna
+          Dalla diagnosi alla riparazione: interveniamo su stufe a pellet
           di tutte le principali marche.
         </p>
       </div>
@@ -85,6 +85,9 @@ const servizi = [
             <ul class="servizi__points">
               {s.points.map((p) => <li>{p}</li>)}
             </ul>
+            <button type="button" class="servizi__apri" data-prefill={JSON.stringify(s.prefill)}>
+              Descrivi il problema
+            </button>
           </div>
         </article>
       ))}
@@ -125,13 +128,11 @@ const servizi = [
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
   .servizi__item:hover {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--color-blue) 45%, var(--color-border));
-    box-shadow: var(--shadow-lg);
+    border-color: var(--color-text-strong);
   }
 
   .servizi__num {
@@ -141,9 +142,9 @@ const servizi = [
     height: 2.4rem;
     font-size: 0.8rem;
     font-weight: 800;
-    color: var(--color-white);
-    background: var(--color-blue);
-    border-radius: 0.55rem;
+    color: var(--color-bg);
+    background: var(--color-text-strong);
+    border-radius: 0;
     line-height: 1;
   }
 
@@ -185,6 +186,22 @@ const servizi = [
     color: var(--color-text);
   }
 
+  .servizi__apri {
+    align-self: flex-start;
+    margin-top: 1rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-fire);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .servizi__apri:hover {
+    color: var(--color-fire-dark);
+  }
+
   .servizi__points li::before {
     content: "✓";
     position: absolute;
@@ -213,3 +230,13 @@ const servizi = [
     }
   }
 </style>
+
+<script>
+  document.querySelectorAll(".servizi__apri").forEach((pulsante) => {
+    pulsante.addEventListener("click", () => {
+      const grezzo = pulsante.getAttribute("data-prefill") || "{}";
+      const dettaglio = JSON.parse(grezzo) as { stufa?: string; problema?: string };
+      document.dispatchEvent(new CustomEvent("tropini:percorso", { detail: dettaglio }));
+    });
+  });
+</script>

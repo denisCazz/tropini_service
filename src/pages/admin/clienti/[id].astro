@@ -1,0 +1,178 @@
+﻿---
+export const prerender = false;
+
+import CampiCliente from "../../../components/admin/CampiCliente.astro";
+import CampiIntervento from "../../../components/admin/CampiIntervento.astro";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import {
+  addIntervento,
+  getCliente,
+  listInterventi,
+  updateCliente,
+  type InterventoRecord,
+} from "../../../lib/admin/db";
+import {
+  formatDate,
+  formatDateTime,
+  isUuid,
+  labelCanale,
+  labelStato,
+  validateCliente,
+  validateIntervento,
+} from "../../../lib/admin/logic";
+
+function campo(form: FormData, name: string): string {
+  const value = form.get(name);
+  return typeof value === "string" ? value : "";
+}
+
+const id = Astro.params.id ?? "";
+const valido = isUuid(id);
+let error = "";
+let cliente = valido ? await getCliente(id).catch((err: unknown) => {
+  error = err instanceof Error ? err.message : "Errore imprevisto.";
+  return null;
+}) : null;
+
+if (!valido || (!cliente && !error)) Astro.response.status = 404;
+
+let values = {
+  nome: cliente?.nome ?? "",
+  telefono: cliente?.telefono ?? "",
+  email: cliente?.email ?? "",
+  indirizzo: cliente?.indirizzo ?? "",
+  comune: cliente?.comune ?? "",
+  marca: cliente?.marca ?? "",
+  modello: cliente?.modello ?? "",
+  note: cliente?.note ?? "",
+};
+let intervento = { data: "", stato: "nuovo", canale: "", problema: "", lavoro: "", nota: "" };
+
+if (cliente && Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const azione = campo(form, "azione");
+  try {
+    if (azione === "anagrafica") {
+      values = {
+        nome: campo(form, "nome"),
+        telefono: campo(form, "telefono"),
+        email: campo(form, "email"),
+        indirizzo: campo(form, "indirizzo"),
+        comune: campo(form, "comune"),
+        marca: campo(form, "marca"),
+        modello: campo(form, "modello"),
+        note: campo(form, "note"),
+      };
+      const parsed = validateCliente(values);
+      if (!parsed.ok) error = parsed.error;
+      else {
+        await updateCliente(id, parsed.value);
+        return Astro.redirect(`/admin/clienti/${id}?salvato=1`, 303);
+      }
+    } else if (azione === "intervento") {
+      intervento = {
+        data: campo(form, "data"),
+        stato: campo(form, "stato") || "nuovo",
+        canale: campo(form, "canale"),
+        problema: campo(form, "problema"),
+        lavoro: campo(form, "lavoro"),
+        nota: campo(form, "nota"),
+      };
+      const parsed = validateIntervento(intervento);
+      if (!parsed.ok) error = parsed.error;
+      else {
+        await addIntervento(id, parsed.value);
+        return Astro.redirect(`/admin/clienti/${id}?salvato=1`, 303);
+      }
+    }
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Errore imprevisto.";
+  }
+}
+
+let interventi: InterventoRecord[] = [];
+if (cliente && !error.startsWith("Database") && !error.startsWith("Mancano")) {
+  try {
+    interventi = await listInterventi(id);
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Errore imprevisto.";
+  }
+}
+
+const salvato = Astro.url.searchParams.get("salvato") === "1";
+const esistente = Astro.url.searchParams.get("esistente") === "1";
+---
+
+<AdminLayout title={cliente ? `${cliente.nome} | Clienti` : "Cliente | Tropini Service"}>
+  {
+    !cliente ? (
+      <div class="admin__card">
+        <h1>{error ? "Anagrafica non disponibile" : "Cliente non trovato"}</h1>
+        {error && <p class="admin__alert" role="alert">{error}</p>}
+        <div class="admin__actions">
+          <a class="btn-primary" href="/admin">Torna all'elenco</a>
+        </div>
+      </div>
+    ) : (
+      <>
+        <p class="admin__lead">
+          <a href="/admin">Clienti</a> / {cliente.nome}
+        </p>
+        <h1>{cliente.nome}</h1>
+        <p class="admin__lead">
+          <span class:list={["admin__badge", cliente.origine === "sito" && "admin__badge--sito"]}>
+            {cliente.origine === "sito" ? "Arrivato dal sito" : "Inserito a mano"}
+          </span>
+        </p>
+        {salvato && <p class="admin__ok">Scheda aggiornata.</p>}
+        {esistente && <p class="admin__ok">Questo telefono o questa email è già in anagrafica.</p>}
+        {error && <p class="admin__alert" role="alert">{error}</p>}
+
+        <div class="admin__split">
+          <form method="post" class="admin__card">
+            <h2>Anagrafica</h2>
+            <input type="hidden" name="azione" value="anagrafica" />
+            <div class="admin__grid" style="margin-top: 0.8rem;">
+              <CampiCliente values={values} />
+            </div>
+            <div class="admin__actions">
+              <button class="btn-primary" type="submit">Salva anagrafica</button>
+            </div>
+          </form>
+
+          <section class="admin__card">
+            <h2>Storico</h2>
+            {interventi.length === 0 ? (
+              <p class="admin__lead">Nessun intervento.</p>
+            ) : (
+              <div class="admin__timeline">
+                {interventi.map((item) => (
+                  <article class="admin__visit">
+                    <span class:list={["admin__badge", `admin__badge--${item.stato}`]}>{labelStato(item.stato)}</span>
+                    <strong> {formatDate(item.data)}</strong>
+                    <p class="admin__muted">Registrato il {formatDateTime(item.createdAt)}</p>
+                    {item.problema && <p>{item.problema}</p>}
+                    {item.lavoro && <p>Lavoro: {item.lavoro}</p>}
+                    {item.note && <p>Nota: {item.note}</p>}
+                    {item.canale && <p class="admin__muted">Canale: {labelCanale(item.canale)}</p>}
+                  </article>
+                ))}
+              </div>
+            )}
+
+            <h2 style="margin-top: 1.4rem;">Nuovo intervento</h2>
+            <form method="post">
+              <input type="hidden" name="azione" value="intervento" />
+              <div class="admin__grid" style="margin-top: 0.8rem;">
+                <CampiIntervento {...intervento} />
+              </div>
+              <div class="admin__actions">
+                <button class="btn-primary" type="submit">Aggiungi intervento</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </>
+    )
+  }
+</AdminLayout>

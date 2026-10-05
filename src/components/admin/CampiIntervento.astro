@@ -1,0 +1,48 @@
+﻿---
+import { CANALI, STATI } from "../../lib/admin/logic";
+
+interface Props {
+  data?: string;
+  stato?: string;
+  canale?: string;
+  problema?: string;
+  lavoro?: string;
+  nota?: string;
+}
+
+const { data = "", stato = "nuovo", canale = "", problema = "", lavoro = "", nota = "" } = Astro.props;
+---
+
+<label class="admin__field">
+  Data
+  <input name="data" type="date" value={data} />
+</label>
+<label class="admin__field">
+  Stato
+  <select name="stato">
+    {STATI.map((item) => (
+      <option value={item.value} selected={item.value === stato}>{item.label}</option>
+    ))}
+  </select>
+</label>
+<label class="admin__field">
+  Canale
+  <select name="canale">
+    <option value="">—</option>
+    {CANALI.map((item) => (
+      <option value={item.value} selected={item.value === canale}>{item.label}</option>
+    ))}
+  </select>
+</label>
+<label class="admin__field admin__field--wide">
+  Problema
+  <textarea name="problema" maxlength="4000">{problema}</textarea>
+</label>
+<label class="admin__field admin__field--wide">
+  Lavoro svolto
+  <textarea name="lavoro" maxlength="4000">{lavoro}</textarea>
+</label>
+<label class="admin__field admin__field--wide">
+  Nota intervento
+  <textarea name="nota" maxlength="4000">{nota}</textarea>
+</label>

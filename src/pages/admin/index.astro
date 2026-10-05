@@ -1,0 +1,127 @@
+﻿---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { listClienti, type ClienteList } from "../../lib/admin/db";
+import { formatDate, labelStato, STATI } from "../../lib/admin/logic";
+
+const q = Astro.url.searchParams.get("q") ?? "";
+const stato = Astro.url.searchParams.get("stato") ?? "";
+const page = Number(Astro.url.searchParams.get("page") ?? "1");
+
+let error = "";
+let list: ClienteList = { rows: [], total: 0, page: 1, pageSize: 40 };
+try {
+  list = await listClienti(q, stato, page);
+} catch (err) {
+  error = err instanceof Error ? err.message : "Errore imprevisto.";
+}
+
+const pages = Math.max(1, Math.ceil(list.total / list.pageSize));
+
+function href(target: number): string {
+  const params = new URLSearchParams();
+  if (q.trim()) params.set("q", q);
+  if (stato) params.set("stato", stato);
+  if (target > 1) params.set("page", String(target));
+  const query = params.toString();
+  return query ? `/admin?${query}` : "/admin";
+}
+---
+
+<AdminLayout title="Clienti | Tropini Service">
+  <h1>Clienti</h1>
+  {
+    !error && (
+      <p class="admin__lead">
+        {list.total === 1 ? "1 scheda" : `${list.total} schede`}
+      </p>
+    )
+  }
+  {error && <p class="admin__alert" role="alert">{error}</p>}
+
+  <form class="admin__filters" method="get">
+    <label class="admin__field">
+      Cerca
+      <input name="q" value={q} placeholder="Nome, telefono o comune" />
+    </label>
+    <label class="admin__field">
+      Stato
+      <select name="stato">
+        <option value="">Tutti</option>
+        {STATI.map((item) => (
+          <option value={item.value} selected={item.value === stato}>{item.label}</option>
+        ))}
+      </select>
+    </label>
+    <div class="admin__actions" style="margin-top: 1.35rem;">
+      <button class="btn-primary" type="submit">Filtra</button>
+    </div>
+  </form>
+
+  {
+    !error && list.rows.length === 0 && (
+      <div class="admin__card">
+        <p>
+          {q || stato
+            ? "Nessun cliente corrisponde alla ricerca."
+            : "Nessun cliente in anagrafica. Aggiungine uno, oppure attendi una richiesta dal sito."}
+        </p>
+      </div>
+    )
+  }
+
+  {
+    list.rows.length > 0 && (
+      <div class="admin__table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Comune</th>
+              <th>Telefono</th>
+              <th>Stato</th>
+              <th>Ultimo intervento</th>
+              <th>Origine</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.rows.map((row) => (
+              <tr>
+                <td data-label="Nome">
+                  <a class="admin__name" href={`/admin/clienti/${row.id}`}>{row.nome}</a>
+                </td>
+                <td data-label="Comune">{row.comune || "—"}</td>
+                <td data-label="Telefono">{row.telefono || "—"}</td>
+                <td data-label="Stato">
+                  <span class:list={["admin__badge", row.ultimoStato && `admin__badge--${row.ultimoStato}`]}>
+                    {labelStato(row.ultimoStato)}
+                  </span>
+                </td>
+                <td data-label="Ultimo intervento">
+                  <div>{formatDate(row.ultimaData)}</div>
+                  {row.ultimoProblema && <div class="admin__muted">{row.ultimoProblema}</div>}
+                </td>
+                <td data-label="Origine">
+                  <span class:list={["admin__badge", row.origine === "sito" && "admin__badge--sito"]}>
+                    {row.origine === "sito" ? "Sito" : "Manuale"}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  {
+    pages > 1 && (
+      <div class="admin__pages">
+        {list.page > 1 ? <a href={href(list.page - 1)}>Precedente</a> : <span></span>}
+        <span class="admin__muted">Pagina {list.page} di {pages}</span>
+        {list.page < pages ? <a href={href(list.page + 1)}>Successiva</a> : <span></span>}
+      </div>
+    )
+  }
+</AdminLayout>

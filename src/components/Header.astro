@@ -40,19 +40,6 @@
       <a href="/#chi-siamo">Chi Siamo</a>
       <a href="/#recensioni">Recensioni</a>
       <a href="/#contatti">Contatti</a>
-      <button type="button" class="theme-toggle site-header__drawer-theme" aria-label="Attiva tema scuro">
-        <span>Tema</span>
-        <span class="site-header__drawer-theme-value">
-          <svg class="theme-toggle__sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"></circle>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
-          </svg>
-          <svg class="theme-toggle__moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-          <span class="theme-toggle__label">Chiaro</span>
-        </span>
-      </button>
       <a href="tel:3342968625" class="btn-primary">Chiama ora</a>
     </nav>
   </div>
@@ -62,32 +49,8 @@
 <script>
   const header = document.querySelector(".site-header");
   const toggle = header?.querySelector(".site-header__toggle");
-  const themeToggles = document.querySelectorAll(".theme-toggle");
   const drawer = document.getElementById("site-header-menu");
   const backdrop = header?.querySelector(".site-header__backdrop");
-
-  const updateThemeControl = () => {
-    const dark = document.documentElement.dataset.theme === "dark";
-    themeToggles.forEach((control) => {
-      control.setAttribute("aria-label", dark ? "Attiva tema chiaro" : "Attiva tema scuro");
-      const label = control.querySelector(".theme-toggle__label");
-      if (label) label.textContent = dark ? "Scuro" : "Chiaro";
-    });
-    document.querySelector('meta[name="theme-color"]')?.setAttribute(
-      "content",
-      dark ? "#0b1220" : "#ffffff",
-    );
-  };
-
-  updateThemeControl();
-  themeToggles.forEach((themeToggle) => {
-    themeToggle.addEventListener("click", () => {
-      const dark = document.documentElement.dataset.theme !== "dark";
-      document.documentElement.dataset.theme = dark ? "dark" : "light";
-      localStorage.setItem("theme", dark ? "dark" : "light");
-      updateThemeControl();
-    });
-  });
 
   if (toggle && drawer) {
     const closeMenu = () => {
@@ -132,7 +95,7 @@
     isolation: isolate;
     background: var(--color-header);
     border-bottom: 1px solid var(--color-border);
-    box-shadow: 0 1px 3px rgb(15 23 42 / 0.06);
+    box-shadow: none;
   }
 
   .site-header__inner {
@@ -155,7 +118,7 @@
     display: inline-flex;
     padding: 0.2rem 0.35rem;
     background: #ffffff;
-    border-radius: 0.45rem;
+    border-radius: 0;
   }
 
   @media (max-width: 900px) {
